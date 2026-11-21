@@ -2,7 +2,7 @@
   "id": "./",
   "name": "Stock Verify",
   "short_name": "Stock Verify",
-  "description": "Branch stock and weight verification (internal audit)",
+  "description": "Branch stock and weight verification. Created by Sangmesh Hiremath.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

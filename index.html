@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="author" content="Sangmesh Hiremath">
+<meta name="description" content="Stock Verify: branch stock and weight verification app. Created by Sangmesh Hiremath.">
+<meta property="og:title" content="Stock Verify">
+<meta property="og:description" content="Branch stock and weight verification app. Created by Sangmesh Hiremath.">
+<meta property="og:type" content="website">
 <meta name="theme-color" content="#2a3fb5">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -92,6 +97,11 @@ button{cursor:pointer}
 
 /* ---------- upload view ---------- */
 .hero{display:flex;flex-direction:column;gap:6px;padding-block:20px 18px}
+.by{font-size:13px;font-weight:600;letter-spacing:.02em}
+.hero .by{color:rgba(255,255,255,.92)}
+.brand .by{font-size:11.5px;color:var(--ink2);line-height:1.2}
+.credit{text-align:center;font-size:12.5px;color:var(--ink2);padding:18px 0 96px}
+.credit b{color:var(--ink)}
 .hero h1{font-family:var(--f-head);font-weight:600;font-size:34px;line-height:1.1;margin:0;letter-spacing:-.01em;text-wrap:balance}
 .hero p{margin:0;color:var(--ink2);max-width:56ch}
 .drop{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:30px 18px;border:2px dashed var(--line);border-radius:16px;background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s}
@@ -442,6 +452,7 @@ details.grp summary span{font-family:var(--f-body);font-size:13px;font-weight:40
   <div class="hero">
     <div class="logo">LR</div>
     <h1>Stock Verify</h1>
+    <div class="by">Created by Sangmesh Hiremath</div>
     <p>Upload the branch stock sheet. When someone calls out the last 4 digits of an LR, type them and mark what you see on the floor.</p>
   </div>
   <input id="file" class="sr" type="file" accept=".xlsx,.xls,.xlsm,.csv">
@@ -479,7 +490,7 @@ details.grp summary span{font-family:var(--f-body);font-size:13px;font-weight:40
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span id="saved" class="saved"></span></div>
+      <div class="brand"><b>Stock Verify</b><span class="by">by Sangmesh Hiremath</span><span id="saved" class="saved"></span></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -501,6 +512,7 @@ details.grp summary span{font-family:var(--f-body);font-size:13px;font-weight:40
   </div>
   <div id="pane-sum" hidden></div>
 </section>
+<div class="credit">Stock Verify · created by <b>Sangmesh Hiremath</b></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -1779,7 +1791,6 @@ if(load()){setup();show('work');refresh();toast('Your last session is back. Noth
 else{show('upload');updRestore()}
 })();
 </script>
-
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
 </body>
 </html>
