@@ -975,23 +975,50 @@ function exportWeights(){
 }
 function rateKg(){var r=parseFloat(S.rate);if(!(r>0))return 0;return r/(S.rateU==='kg'?1:S.rateU==='quintal'?100:1000)}
 function rateLbl(){return S.rateU==='kg'?'kg':S.rateU==='quintal'?'quintal (100 kg)':'tonne'}
+function kgS(n){return (Math.round(n*100)/100).toString()}
 function howWeighed(i){
   if(!i.pw)return '';
-  return i.pw.rows.filter(function(r){return parseFloat(r.w)>0}).map(function(r){var w=parseFloat(r.w),q=parseFloat(r.q);return r.m==='each'?'1 article '+w+' kg (qty '+(q>0?q:1)+')':w+' kg'+(q>0?' for '+q+' articles':' (weighed together)')}).join('; ');
+  var rows=i.pw.rows.filter(function(r){return parseFloat(r.w)>0}),multi=rows.length>1;
+  return rows.map(function(r,k){
+    var w=parseFloat(r.w),q=parseFloat(r.q),pre=multi?'Lift '+(k+1)+': ':'';
+    if(r.m==='each'){
+      var n=q>0?q:1;
+      return pre+'Labour lifted 1 article of '+kgS(w)+' kg on the scale'+(n>1?'. The other '+(n-1)+' identical articles were not lifted, so the LR is counted as '+n+' x '+kgS(w)+' = '+kgS(w*n)+' kg':'');
+    }
+    return pre+'Labour lifted '+(q>0?q+' article'+(q>1?'s':'')+' together':'the articles together')+' on the scale: '+kgS(w)+' kg';
+  }).join('. ');
+}
+function liftedArts(i){
+  if(!i.pw)return 0;
+  return i.pw.rows.reduce(function(s,r){var w=parseFloat(r.w),q=parseFloat(r.q);if(!(w>0))return s;return s+(r.m==='each'?1:(q>0?q:0))},0);
+}
+var LABW=[6,16,18,10,70,10,14,16,14];
+function labourNotes(rk){
+  var ex=wtItems().filter(function(i){return i.pw&&i.pw.rows.some(function(r){return r.m==='each'&&parseFloat(r.q)>1&&parseFloat(r.w)>0})})[0],n=[];
+  n.push(['','HOW TO READ THIS STATEMENT']);
+  n.push(['','1. Lifted on scale (kg) is the weight the labour actually put on the scale and lifted. Labour payment is based only on this column.']);
+  n.push(['','2. Physical weight of whole LR (kg) is the full weight of all articles of that LR. It is used for the weight report, not for labour payment.']);
+  n.push(['','3. When many articles are identical, only one is lifted and its weight is multiplied by the number of articles to get the LR physical weight. Labour is paid only for the one lifted.']);
+  if(ex){var r0=ex.pw.rows.filter(function(r){return r.m==='each'&&parseFloat(r.q)>1})[0],w=parseFloat(r0.w),q=parseFloat(r0.q);n.push(['','Example from this statement: LR '+ex.lr+' has '+q+' identical articles of '+kgS(w)+' kg. Labour lifted 1 article ('+kgS(w)+' kg). Physical weight of the LR = '+kgS(w*q)+' kg. Labour is paid for '+kgS(w)+' kg.'])}
+  else n.push(['','Example: an LR has 10 identical articles of 20 kg. Labour lifts 1 article (20 kg). Physical weight of the LR = 200 kg. Labour is paid for 20 kg.']);
+  n.push(['','4. If a big LR was weighed in several lifts, each lift is listed as Lift 1, Lift 2 and so on, and Lifted on scale is the total of all lifts.']);
+  n.push(['','5. '+(rk?'Amount = Lifted on scale (kg) x rate. Rate used: Rs '+S.rate+' per '+rateLbl()+' (Rs '+rd2(rk)+' per kg).':'No rate was entered, so no amount is shown. Amount = Lifted on scale (kg) x rate.')]);
+  return n;
 }
 function labourAoa(){
-  var rk=rateKg(),head=['Sl','LR No','From (Booking Stn)','NOA','How weighed','Lifted on Scale (kg)'];
+  var rk=rateKg(),head=['Sl','LR No','From (Booking Stn)','Total articles (NOA)','What labour lifted on the scale','Articles lifted','Lifted on scale (kg)','Physical weight of whole LR (kg)'];
   if(rk)head.push('Amount (Rs)');
-  var out=[head],tl=0,tn=0;
+  var out=[['','LABOUR LIFTED STATEMENT'],['','Branch: '+(hoBranch()||'-')+'   |   Date: '+dmy(S.idate||isoToday())],[],head],tl=0,tn=0,ta=0,tp=0;
   wtItems().forEach(function(i){
-    var l=liftedOf(i);tl+=l;tn+=i.noa;
-    var r=[i.sl,String(i.lr),i.stn||'',i.noa,howWeighed(i),rd2(l)];
+    var l=liftedOf(i),pw=physOf(i),la=liftedArts(i);tl+=l;tn+=i.noa;ta+=la;tp+=pw;
+    var r=[i.sl,String(i.lr),i.stn||'',i.noa,howWeighed(i),la||'',rd2(l),rd2(pw)];
     if(rk)r.push(rd2(l*rk));
     out.push(r);
   });
-  var t=['','TOTAL','',tn,'',rd2(tl)];if(rk)t.push(rd2(tl*rk));out.push(t);
-  out.push(['','Total in tonnes','','','',Math.round(tl)/1000]);
-  if(rk)out.push(['','Rate','','','Rs '+S.rate+' per '+rateLbl(),'']);
+  var t=['','TOTAL','',tn,'',ta||'',rd2(tl),rd2(tp)];if(rk)t.push(rd2(tl*rk));out.push(t);
+  out.push(['','Total lifted in tonnes','','','','',Math.round(tl)/1000]);
+  out.push([]);
+  labourNotes(rk).forEach(function(r){out.push(r)});
   return out;
 }
 function labourExport(){
@@ -1000,7 +1027,7 @@ function labourExport(){
   if(!DL||typeof XLSX==='undefined'){copyTsv(tsv);return}
   try{
     var wb=XLSX.utils.book_new(),ws=XLSX.utils.aoa_to_sheet(aoa);
-    ws['!cols']=[{wch:6},{wch:16},{wch:18},{wch:7},{wch:34},{wch:20},{wch:14}];
+    ws['!cols']=LABW.map(function(w){return {wch:w}});
     XLSX.utils.book_append_sheet(wb,ws,'Labour lifted');
     var buf=XLSX.write(wb,{type:'array',bookType:'xlsx'});
     DL.save({filename:xlsxName().replace('weight-check','labour-lifted'),data:new Uint8Array(buf)}).then(function(){toast('Labour statement saved')},function(e){if(e&&e.code==='declined')return;copyTsv(tsv)});
@@ -1203,7 +1230,7 @@ function fullExport(ts){
   function sheet(aoa,cols,name){var x=XLSX.utils.aoa_to_sheet(aoa);x['!cols']=cols.map(function(n){return {wch:n}});XLSX.utils.book_append_sheet(wb,x,name)}
   sheet(dash,[44,18,18],'Dashboard');
   sheet(all,[6,16,18,7,7,13,13,18,19,19,19,20,7,24,28],'All LRs');
-  if(w.length){sheet(weightAoa(),[6,16,18,7,18,19,19,19,20,15,9,24,28],'Weight check');sheet(labourAoa(),[6,16,18,7,34,20,14],'Labour lifted')}
+  if(w.length){sheet(weightAoa(),[6,16,18,7,18,19,19,19,20,15,9,24,28],'Weight check');sheet(labourAoa(),LABW,'Labour lifted')}
   if(S.excess.length){
     var ea=[['Type','LR No / Name','From (Booking Stn)','Articles','Weight (kg)','Description','Note']];
     S.excess.forEach(function(x){ea.push(exRow(x))});
@@ -1305,7 +1332,7 @@ function weightDash(){
 }
 function labourSection(){
   if(!wtItems().length)return '';
-  return '<section class="grp st-info"><header><h3>Labour payment statement</h3><span>Based on what labour actually lifted on the scale</span></header><div class="labbox"><div class="two"><label>Rate, Rs<input id="lrate" class="lrate" type="number" inputmode="decimal" step="any" min="0" value="'+esc(S.rate)+'" placeholder="optional"></label><label>Per<select id="lunit" class="lunit"><option value="tonne"'+(S.rateU==='tonne'?' selected':'')+'>Tonne</option><option value="quintal"'+(S.rateU==='quintal'?' selected':'')+'>Quintal (100 kg)</option><option value="kg"'+(S.rateU==='kg'?' selected':'')+'>Kg</option></select></label></div><p class="hint2" id="lab-amt">'+labourAmt()+'</p><button type="button" class="btn ok" data-act="labxlsx">Labour statement (Excel)</button></div></section>';
+  return '<section class="grp st-info"><header><h3>Labour payment statement</h3><span>Based on what labour actually lifted on the scale</span></header><div class="labbox"><div class="two"><label>Rate, Rs<input id="lrate" class="lrate" type="number" inputmode="decimal" step="any" min="0" value="'+esc(S.rate)+'" placeholder="optional"></label><label>Per<select id="lunit" class="lunit"><option value="tonne"'+(S.rateU==='tonne'?' selected':'')+'>Tonne</option><option value="quintal"'+(S.rateU==='quintal'?' selected':'')+'>Quintal (100 kg)</option><option value="kg"'+(S.rateU==='kg'?' selected':'')+'>Kg</option></select></label></div><p class="tmnote">Pay labour only for what they lifted on the scale. If 10 identical boxes are weighed by lifting just 1 box, the LR physical weight is 10 times that box, but labour is paid for the 1 box lifted. The Excel statement explains this line by line.</p><p class="hint2" id="lab-amt">'+labourAmt()+'</p><button type="button" class="btn ok" data-act="labxlsx">Labour statement (Excel)</button></div></section>';
 }
 function weightSection(){
   var w=S.items.filter(function(i){return physOf(i)>0});if(!w.length)return '';
