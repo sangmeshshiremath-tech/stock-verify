@@ -358,23 +358,16 @@ body::before{background:var(--bar1)}
 .bra .btn{flex:1;min-width:90px}
 .artsl{margin-top:4px;font-size:13px;color:var(--ink2)}
 .labbox{padding:12px;display:flex;flex-direction:column;gap:10px}
-.phb{display:grid;gap:8px;padding:10px;border:1px dashed var(--ink2);border-radius:10px}
-.phb.need{border:2px solid var(--loss)}
-.phneed{color:var(--loss);font-weight:600;font-size:13px}
-.thumbs{display:flex;flex-wrap:wrap;gap:8px}
-.thumb{position:relative;width:84px;height:84px;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.thumb small{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.65);color:#fff;font-size:11px;padding:2px 4px;text-align:center}
-.phov{position:fixed;inset:0;z-index:40;background:#000;display:flex;flex-direction:column;gap:10px;padding:max(12px,env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));color:#fff}
-.phov img{flex:1;min-height:0;width:100%;object-fit:contain}
-.phbar{display:flex;flex-direction:column;gap:2px;font-size:14px}
-.phacts{display:flex;gap:8px}
-.phacts .btn{flex:1}
-.phneedbox{display:grid;gap:6px;padding:10px;border:2px solid var(--loss);border-radius:10px}
+.tmnote{font-size:13px;color:var(--ink2);margin:0}
+.tmres{background:var(--accent-bg);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
+.tmcl{display:grid;gap:6px;border:1px solid var(--warn-line);background:var(--warn-bg);border-radius:10px;padding:10px 12px}
+.tmcl .vs{display:grid;gap:2px;font-size:13.5px}
+.tmck{display:flex;gap:8px;align-items:center;font-size:14px}
+.tmcl .acts2{display:flex;gap:8px;flex-wrap:wrap}
+.tmcl .acts2 button{flex:1;min-width:120px;min-height:40px;border-radius:10px;border:1.5px solid var(--ink2);background:var(--surface);color:var(--ink);font:inherit;font-size:14px;font-weight:600;cursor:pointer}
 .chiprow{display:flex;flex-wrap:wrap;gap:6px}
 .chiplr{border:1px solid var(--loss);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 10px;font-weight:700;font-size:14px}
 .chiplr small{font-weight:500;color:var(--ink2)}
-.galrow{display:grid;gap:6px;padding-top:8px;border-top:1px solid var(--line)}
 .tilebtn{text-align:left;font:inherit;cursor:pointer;width:100%}
 .tilebtn.on{box-shadow:0 0 0 3px var(--accent)}
 .dotbtn{background:none;border:0;color:inherit;font:inherit;padding:6px 6px;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
@@ -520,8 +513,7 @@ details.grp summary span{font-family:var(--f-body);font-size:13px;font-weight:40
   <button type="button" data-act="tab" data-tab="sum" aria-pressed="false"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 15v-3M12 15V8M16 15v-5"/></svg></span>Summary<span id="sumbdg" class="bdg" hidden></span></button>
 </div></nav>
 <div id="splash"><div class="logo">SV</div><div class="sp-t">Stock Verify</div><div class="sp-s">Audit · Stock · Weight</div></div>
-<input type="file" id="phcam" accept="image/*" capture="environment" hidden>
-<input type="file" id="phgal" accept="image/*" hidden>
+<input type="file" id="tmfile" hidden>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -750,7 +742,6 @@ function refresh(){
   $('#pane-sum').hidden=S.tab!=='sum';
   $('#qclear').hidden=!S.q;
   if(S.tab==='check'){renderFilters(c);renderResults()}else renderSummary();
-  loadThumbs();
 }
 function renderFilters(c){
   var f=[['all','All',c.total],['idle','Not checked',c.idle],['ok','All found',c.ok],['warn','Short',c.warn],['bad','Not found',c.bad],['cr','CR stock',c.cr]];
@@ -786,7 +777,6 @@ function ctlHtml(i,s){
     h+='</div>';
   }
   h+=pwBlock(i);
-  h+=photoBlock(i);
   h+=cftBlock(i);
   h+='<div class="remark"><label for="rm-'+i.id+'">Remark for this LR</label><input id="rm-'+i.id+'" class="rem'+(i.remark?' filled':'')+'" data-id="'+i.id+'" type="text" maxlength="200" autocomplete="off" placeholder="e.g. 1 article damaged, found in wrong bay" value="'+esc(i.remark||'')+'"><div class="tags">'+['Damaged','Wet','Leaking','Torn packing'].map(function(t){return '<button type="button" class="tag" data-act="tag" data-id="'+i.id+'" data-t="'+t+'">'+t+'</button>'}).join('')+'</div></div>';
   if(i.found!=null)h+='<button type="button" class="link" data-act="clear" data-id="'+i.id+'">Clear mark</button>';
@@ -909,7 +899,7 @@ function pwResult(i){
   var p=physOf(i),c=cwtOf(i);
   if(p<=0)return '<span style="color:var(--ink2)">Enter the physical weight.</span>';
   var lf=liftedOf(i);
-  return 'Physical <b>'+p.toFixed(2)+'</b> kg · Lifted on scale <b>'+lf.toFixed(2)+'</b> kg · '+(c>0?'Charged <b>'+c.toFixed(2)+'</b> kg ':'Charged weight not set ')+wbadge(i)+artsLine(i)+phHint(i);
+  return 'Physical <b>'+p.toFixed(2)+'</b> kg · Lifted on scale <b>'+lf.toFixed(2)+'</b> kg · '+(c>0?'Charged <b>'+c.toFixed(2)+'</b> kg ':'Charged weight not set ')+wbadge(i)+artsLine(i);
 }
 function pwStat(i){var p=physOf(i);if(p<=0)return '';var t=(i.pw&&i.pw.at)?new Date(i.pw.at):null;return 'Recorded '+p.toFixed(2)+' kg'+(t?' at '+t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'')}
 function pwBlock(i){
@@ -1065,6 +1055,110 @@ function brListHtml(){
     return '<div class="brc'+(cur?' cur':'')+'"><div class="brt"><b>'+esc(b.name)+'</b>'+(cur?'<span class="tagx">Open now</span>':'')+'</div><div class="brm">'+it.length+' LRs · '+chk+' checked · '+wd+' weighed · saved '+brStamp(b.savedAt)+'</div><div class="bra"><button type="button" class="btn info" data-act="bropen" data-id="'+b.id+'">'+(cur?'Back to it':'Open')+'</button><button type="button" class="btn line" data-act="brstmt" data-id="'+b.id+'">Statement</button><button type="button" class="btn line" data-act="brho" data-id="'+b.id+'">HO weight report</button><button type="button" class="btn line" data-act="brdel" data-id="'+b.id+'">'+(S.confirmDel===b.id?'Tap again to delete':'Delete')+'</button></div></div>';
   }).join('')+'</section>';
 }
+
+/* ---------- team: send / merge checks and weights ---------- */
+var TMK='lrchk.tmname.v1',TMN='';try{TMN=String(localStorage.getItem(TMK)||'')}catch(e){}
+function tmKey(i){return String(i.sl)+'|'+String(i.lr)}
+function tmSig(o){return o.cr?'cr':(o.found==null?'idle':String(o.found))}
+function tmLab(o,noa){return o.cr?'CR stock':o.found==null?'Not checked':o.found>=noa?'All '+noa+' found':o.found<=0?'Not found':o.found+' of '+noa+' found'}
+function tmPhys(pw){return physOf({pw:pw})}
+function tmRows(pw){return pw&&pw.rows?pw.rows.filter(function(r){return parseFloat(r.w)>0}).map(function(r){return {w:r.w,q:r.q,m:r.m}}):[]}
+function tmSend(share){
+  if(!S.items.length){toast('Load a stock sheet first');return}
+  var list=[];
+  S.items.forEach(function(i){
+    var rows=tmRows(i.pw),o={k:tmKey(i),noa:i.noa,found:i.found==null?null:i.found,hist:i.hist||null,cr:!!i.cr,remark:i.remark||''};
+    var has=i.found!=null||i.cr||(i.remark&&String(i.remark).trim());
+    if(rows.length){o.pw={rows:rows};has=true}
+    if(cftDims(i)){o.cft=i.cft;has=true}
+    if(i.cwm!=null&&i.cwm!==''){o.cwm=i.cwm;has=true}
+    if(has)list.push(o);
+  });
+  Promise.resolve().then(function(){
+    var d={app:'stock-verify-work',v:2,label:TMN||'Auditor',sheet:S.fileName,total:S.items.length,noa:sumNoa(S.items),at:Date.now(),items:list,excess:S.excess.map(function(x){return {kind:x.kind,crno:x.crno,lr:x.lr,lr4:x.lr4,qty:x.qty,wt:x.wt,desc:x.desc,stn:x.stn,note:x.note,at:x.at}})};
+    var txt=JSON.stringify(d),safe=(TMN||'auditor').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'auditor';
+    var fname='Stock-check-'+safe+'-'+isoToday()+'.json';
+    if(share){
+      try{
+        var f=new File([txt],fname.replace(/\.json$/,'.txt'),{type:'text/plain'});
+        if(navigator.canShare&&navigator.canShare({files:[f]})){
+          navigator.share({files:[f],title:'Stock check',text:'Stock Verify check file from '+(TMN||'Auditor')+'. Open Stock Verify, Summary tab, Merge a partner\'s file.'}).then(function(){toast('Shared')},function(e){if(e&&e.name==='AbortError')return;toast('Could not share. Use Save file instead.')});
+          return;
+        }
+      }catch(e){}
+      toast('Sharing is not available here. Saving the file instead.');
+    }
+    if(!DL){toast('Saving is not available here');return}
+    return DL.save({filename:fname,data:new TextEncoder().encode(txt)}).then(function(){toast('File saved: '+list.length+' LRs'+'. Send it on WhatsApp.')},function(e){if(e&&e.code==='declined')return;toast('Could not save the file')});
+  });
+}
+function tmMerge(d){
+  if(!d||d.app!=='stock-verify-work'||!Array.isArray(d.items)){toast('This is not a Stock Verify check file');return}
+  var map={};S.items.forEach(function(i){map[tmKey(i)]=i});
+  var matched=0,added=0,same=0,clashes=[],un=0,wAdd=0;
+  d.items.forEach(function(t){if(map[t.k])matched++;else un++});
+  if(d.items.length&&matched<Math.max(1,Math.ceil(d.items.length*0.5))){toast('This file is from a different stock sheet. Only '+matched+' of '+d.items.length+' LRs match.');return}
+  backupPrev();
+  d.items.forEach(function(t){
+    var i=map[t.k];if(!i)return;
+    var th={found:t.found==null?null:t.found,cr:!!t.cr,hist:t.hist||null};
+    var rm=String(t.remark||'').trim();
+    if(rm){var cur=String(i.remark||'').trim();if(!cur)i.remark=rm;else if(cur.toLowerCase().indexOf(rm.toLowerCase())<0)i.remark=cur+' / '+rm}
+    var ts=tmSig(th),ms=tmSig(i);
+    if(ts!=='idle'){
+      if(ms==='idle'){i.found=th.found;i.hist=th.hist;i.cr=th.cr;added++}
+      else if(ms===ts)same++;
+      else if(!i.cr&&!th.cr){
+        var m=i.found,tf=th.found;
+        if(tf<=0)same++;
+        else if(m<=0){i.found=th.found;i.hist=th.hist;added++}
+        else if(m>=i.noa)same++;
+        else if(tf>=i.noa){i.found=th.found;i.hist=th.hist;added++}
+        else clashes.push({id:i.id,type:'stock',th:th,sum:true});
+      }
+      else clashes.push({id:i.id,type:'stock',th:th});
+    }
+    if(t.cft&&!cftDims(i))i.cft=t.cft;
+    if((t.cwm!=null&&t.cwm!=='')&&(i.cwm==null||i.cwm===''))i.cwm=t.cwm;
+    var trows=tmRows(t.pw);
+    if(trows.length){
+      var mrows=tmRows(i.pw);
+      if(!mrows.length){i.pw={rows:trows};wAdd++}
+      else if(JSON.stringify(mrows)!==JSON.stringify(trows))clashes.push({id:i.id,type:'weight',th:{pw:{rows:trows}}});
+    }
+  });
+  var exAdd=0;
+  (d.excess||[]).forEach(function(x,n){
+    var key=[x.kind,x.lr,x.lr4,x.crno,x.qty,x.note].join('|');
+    if(S.excess.some(function(m){return [m.kind,m.lr,m.lr4,m.crno,m.qty,m.note].join('|')===key}))return;
+    S.excess.push({id:Date.now()+n,kind:x.kind,crno:x.crno||'',lr:x.lr||'',lr4:x.lr4||'',qty:x.qty,wt:x.wt||'',desc:x.desc||'',stn:x.stn||'',note:x.note||'',at:x.at||Date.now()});exAdd++;
+  });
+  S.team={label:d.label||'Partner',added:added,same:same,clashes:clashes,exAdd:exAdd,un:un,wAdd:wAdd};
+  save();toast('Merged from '+S.team.label);refresh();
+}
+function tmClear(id,type){S.team.clashes=S.team.clashes.filter(function(c){return !(c.id===id&&c.type===type)})}
+function tmPanel(){
+  var t=S.team;if(!t)return '';
+  var h='<div class="tmres"><b>Merged from '+esc(t.label)+'</b><br>'+t.added+' stock checks added · '+t.same+' already the same'+(t.wAdd?' · '+t.wAdd+' weights added':'')+' · '+t.clashes.length+' clash'+(t.clashes.length===1?'':'es')+(t.exAdd?' · '+t.exAdd+' excess / CR / HO entries added':'')+(t.un?' · '+t.un+' of their LRs not on your sheet (ignored)':'')+'</div>';
+  if(t.clashes.length){
+    h+='<p class="tmnote">Both of you recorded these LRs differently. If each of you counted different articles of the same LR (for example 2 and 3 of 5), tap Add both.</p>';
+    t.clashes.forEach(function(c){var i=S.items[c.id];if(!i)return;
+      var mine,theirs,both='';
+      if(c.type==='weight'){mine=physOf(i).toFixed(2)+' kg';theirs=tmPhys(c.th.pw).toFixed(2)+' kg';both='<button type="button" data-act="tmboth" data-id="'+i.id+'">Add both (parts of one lot)</button>'}
+      else{mine=tmLab(i,i.noa);theirs=tmLab(c.th,i.noa);if(c.sum){var sm=Math.min(i.noa,(i.found||0)+(c.th.found||0));both='<button type="button" data-act="tmboth" data-id="'+i.id+'" data-t="stock">Add both: '+(i.found||0)+' + '+(c.th.found||0)+' = '+sm+' of '+i.noa+'</button>'}}
+      h+='<div class="tmcl"><div><b>'+lrHtml(i.lr)+'</b> · NOA '+i.noa+' · '+(c.type==='weight'?'Physical weight':'Stock check')+'</div><div class="vs"><span>Mine: <b>'+esc(mine)+'</b></span><span>'+esc(t.label)+': <b>'+esc(theirs)+'</b></span></div><div class="acts2"><button type="button" data-act="tmmine" data-id="'+i.id+'" data-t="'+c.type+'">Keep mine</button><button type="button" data-act="tmtheirs" data-id="'+i.id+'" data-t="'+c.type+'">Use '+esc(t.label)+'</button>'+both+'</div></div>';
+    });
+    h+='<button type="button" class="btn line" data-act="tmmineall">Keep mine for all remaining</button>';
+  }
+  return h;
+}
+function teamSection(){
+  return '<section class="grp st-info"><header><h3>Two or more auditors</h3><span>Combine stock checks and weights done on different phones</span></header><div class="labbox">'+
+    '<p class="tmnote">Everyone loads the same stock sheet and works from their own end. At the end, each partner taps Share, picks WhatsApp and sends the file. The collecting person long-presses the file in WhatsApp, saves it to the phone, then taps Merge. The file carries the stock check, remarks, weights, CFT and excess entries.</p>'+
+    '<label>Your name for the file<input id="tmname" class="tmname" type="text" maxlength="40" placeholder="e.g. Ravi" value="'+esc(TMN)+'"></label>'+
+    '<div class="acts"><button type="button" class="btn info" data-act="tmshare">Share my work on WhatsApp</button><button type="button" class="btn line" data-act="tmsend">Save my work as a file</button><button type="button" class="btn line" data-act="tmpick">Merge a partner\'s file</button></div>'+
+    tmPanel()+'</div></section>';
+}
 function branchSection(){
   var h='<section class="grp st-info"><header><h3>Save this branch</h3><span>'+(S.bid?'Live: every entry also saves to this branch':'Keep it and reopen it any time')+'</span></header><div class="labbox">';
   h+='<label>Branch name<input id="brname" type="text" autocomplete="off" value="'+esc(S.bname||'')+'" placeholder="e.g. GKP branch, Nov 2026"></label>';
@@ -1095,7 +1189,7 @@ function fullExport(ts){
     ['WEIGHT','kg','Tonnes'],
     ['Weights taken on LRs',w.length,'of '+c.total],
     ['Total weighed (physical)',rd2(pp),rd2(pp/1000*1000)/1000],['Labour lifted on scale',rd2(pl),rd2(pl)/1000],['Charged weight of these LRs',rd2(pc),rd2(pc)/1000],['Actual weight of these LRs',rd2(pa),rd2(pa)/1000],
-    ['Physical minus charged',rd2(pp-pc),''],['LRs in loss',ws.loss,''],['Loss, kg over charged',rd2(ws.kg),''],['Scale photos taken',phAll().length,'on '+S.items.filter(function(i){return phList(i).length}).length+' LRs'],['LRs with a difference but no photo',needPhotoList().length,''],[],
+    ['Physical minus charged',rd2(pp-pc),''],['LRs in loss',ws.loss,''],['Loss, kg over charged',rd2(ws.kg),''],[],
     ['OTHER','Count',''],['LRs with a remark',remCount(),''],['W LRs weighed without CFT',cftMiss,''],
     ['Excess entries',exList('excess').length,exQty('excess')+' articles'],['CR raised entries',exList('cr').length,exQty('cr')+' articles'],['HO line stock entries',exList('ho').length,exQty('ho')+' articles']];
   var all=[['Sl','LR No','From (Booking Stn)','NOA','Found','Status','Articles short','Actual Weight (kg)','Charged Weight (kg)','Physical Weight (kg)','Lifted on Scale (kg)','CFT (L x W x H)','Days','Description','Remark']];
@@ -1118,184 +1212,6 @@ function fullExport(ts){
   var safe=String(S.bname||'branch').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'branch';
   var buf=XLSX.write(wb,{type:'array',bookType:'xlsx'});
   DL.save({filename:xlsxName().replace('LR-weight-check','LR-audit-'+safe),data:new Uint8Array(buf)}).then(function(){toast('Full statement saved')},function(e){if(e&&e.code==='declined')return;copyTsv(tsv)});
-}
-/* ---------- scale photos ---------- */
-var PDB=null,PMEM={};
-function pdb(){
-  if(PDB)return Promise.resolve(PDB);
-  return new Promise(function(res){
-    try{var r=indexedDB.open('lrchk-photos',1);
-      r.onupgradeneeded=function(){r.result.createObjectStore('p')};
-      r.onsuccess=function(){PDB=r.result;res(PDB)};
-      r.onerror=function(){res(null)};r.onblocked=function(){res(null)};
-    }catch(e){res(null)}
-  });
-}
-function pput(id,data){
-  PMEM[id]=data;
-  return pdb().then(function(d){
-    if(!d)return false;
-    return new Promise(function(res){try{var t=d.transaction('p','readwrite');t.objectStore('p').put(data,id);t.oncomplete=function(){res(true)};t.onerror=function(){res(false)};t.onabort=function(){res(false)}}catch(e){res(false)}});
-  });
-}
-function pget(id){
-  if(PMEM[id])return Promise.resolve(PMEM[id]);
-  return pdb().then(function(d){
-    if(!d)return null;
-    return new Promise(function(res){try{var q=d.transaction('p','readonly').objectStore('p').get(id);q.onsuccess=function(){if(q.result)PMEM[id]=q.result;res(q.result||null)};q.onerror=function(){res(null)}}catch(e){res(null)}});
-  });
-}
-function pdelete(id){delete PMEM[id];pdb().then(function(d){if(!d)return;try{d.transaction('p','readwrite').objectStore('p').delete(id)}catch(e){}})}
-function phStamp(ts){var d=new Date(ts);function z(n){return ('0'+n).slice(-2)}return z(d.getDate())+'.'+z(d.getMonth()+1)+'.'+d.getFullYear()+' '+z(d.getHours())+':'+z(d.getMinutes())}
-function shrink(file,caption){
-  return new Promise(function(res,rej){
-    var fr=new FileReader();
-    fr.onerror=function(){rej('read')};
-    fr.onload=function(){
-      var im=new Image();
-      im.onerror=function(){rej('bad')};
-      im.onload=function(){
-        var w=im.naturalWidth||im.width,h=im.naturalHeight||im.height,k=Math.min(1,1280/Math.max(w,h));
-        w=Math.round(w*k);h=Math.round(h*k);
-        var c=document.createElement('canvas');c.width=w;c.height=h;
-        var x=c.getContext('2d');x.drawImage(im,0,0,w,h);
-        var fs=Math.max(16,Math.round(w/38)),bh=fs*2;
-        x.fillStyle='rgba(0,0,0,0.65)';x.fillRect(0,h-bh,w,bh);
-        x.fillStyle='#ffffff';x.font='bold '+fs+'px sans-serif';x.textBaseline='middle';
-        x.fillText(caption,fs*0.6,h-bh/2,w-fs*1.2);
-        res({data:c.toDataURL('image/jpeg',0.72),w:w,h:h});
-      };
-      im.src=fr.result;
-    };
-    fr.readAsDataURL(file);
-  });
-}
-function phList(i){return i.photos||[]}
-function phAll(){var r=[];S.items.forEach(function(i){phList(i).forEach(function(p){r.push({i:i,p:p})})});return r}
-function phFind(pid){var r=null;S.items.forEach(function(i){phList(i).forEach(function(p){if(p.id===pid)r={i:i,p:p}})});return r}
-function needPhoto(i){var p=physOf(i),c=cwtOf(i);return p>0&&c>0&&Math.abs(p-c)>0.005}
-function needPhotoList(){return S.items.filter(function(i){return needPhoto(i)&&!phList(i).length})}
-function phHint(i){
-  if(!needPhoto(i)||phList(i).length)return '';
-  var d=wdiff(i);
-  return '<span class="phneed">Difference '+(d>0?'+':'')+d.toFixed(2)+' kg. Add a photo of the consignment on the scale with the scale number.</span>';
-}
-function lastScale(){var b=null;phAll().forEach(function(x){if(!b||x.p.ts>b.ts)b=x.p});return b?b.scale:''}
-function thumbsHtml(i){return '<div class="thumbs">'+phList(i).map(function(p){return '<button type="button" class="thumb" data-act="phview" data-pid="'+p.id+'"><img data-pid="'+p.id+'" alt="Scale photo"><small>'+esc(p.scale)+'</small></button>'}).join('')+'</div>'}
-function photoBlock(i){
-  var l=phList(i),need=needPhoto(i);
-  var h='<div class="phb'+(need&&!l.length?' need':'')+'"><div class="cft-h"><b>Photo on scale</b><small>'+(need?' Weight differs from charged':' Optional')+'</small></div>';
-  h+='<label class="kf">Scale number<input class="scalein" data-id="'+i.id+'" type="text" autocomplete="off" value="'+esc(S.scale||lastScale())+'" placeholder="e.g. WS-04"></label>';
-  h+='<div class="big"><button type="button" class="btn info" data-act="phcam" data-id="'+i.id+'">Take photo</button><button type="button" class="btn line2" data-act="phgal" data-id="'+i.id+'">From gallery</button></div>';
-  if(l.length)h+=thumbsHtml(i);
-  return h+'</div>';
-}
-function loadThumbs(){
-  var im=document.querySelectorAll('img[data-pid]');
-  Array.prototype.forEach.call(im,function(el){
-    if(el.getAttribute('src'))return;
-    pget(el.getAttribute('data-pid')).then(function(d){if(d)el.src=d});
-  });
-}
-function phTake(file){
-  var id=S.phTarget,it=S.items[id];if(!it||!file)return;
-  var ts=Date.now(),sc=S.scale||'',br=hoBranch();
-  var cap='LR '+it.lr+'   Scale '+sc+'   '+phStamp(ts)+(br?'   '+br:'');
-  toast('Saving photo...');
-  shrink(file,cap).then(function(r){
-    var pid='p'+ts+Math.floor(Math.random()*1000);
-    return pput(pid,r.data).then(function(ok){
-      if(!it.photos)it.photos=[];
-      it.photos.push({id:pid,scale:sc,ts:ts,w:r.w,h:r.h});
-      save();refresh();
-      toast(ok?'Photo saved for LR ...'+lrBase(it.lr).slice(-4):'Photo added, but this browser could not store it. It will be lost when you close the app.');
-    });
-  },function(){toast('Could not read that photo. Try again.')});
-}
-function phView(pid){
-  var f=phFind(pid);if(!f)return;
-  pget(pid).then(function(d){
-    if(!d){toast('Photo not found on this device');return}
-    var o=document.getElementById('phov');
-    if(!o){o=document.createElement('div');o.id='phov';o.className='phov';document.body.appendChild(o)}
-    o.innerHTML='<div class="phbar"><b>LR '+esc(f.i.lr)+'</b><span>Scale '+esc(f.p.scale)+' · '+phStamp(f.p.ts)+'</span></div><img alt="Scale photo" src="'+d+'"><div class="phacts"><button type="button" class="btn line2" data-act="phclose">Close</button><button type="button" class="btn line2" data-act="phdel" data-pid="'+pid+'">'+(S.confirmPh===pid?'Tap again to remove':'Remove photo')+'</button></div>';
-    o.hidden=false;
-  });
-}
-function photoSection(){
-  var all=phAll(),n=wtItems().length;
-  if(!n&&!all.length)return '';
-  var need=needPhotoList(),withP=S.items.filter(function(i){return phList(i).length});
-  var h='<section class="grp st-info"><header><h3>Scale photos</h3><span>'+all.length+' photos on '+withP.length+' LRs</span></header><div class="labbox">';
-  if(need.length){
-    h+='<div class="phneedbox"><b>Photo needed: weight differs from charged ('+need.length+')</b><div class="chiprow">'+need.map(function(i){var d=wdiff(i);return '<button type="button" class="chiplr" data-act="gocheck" data-id="'+i.id+'">'+esc(lrBase(i.lr).slice(-4))+' <small>'+(d>0?'+':'')+d.toFixed(1)+' kg</small></button>'}).join('')+'</div></div>';
-  }else if(n){h+='<p class="hint2">Every LR with a weight difference has a photo.</p>'}
-  withP.forEach(function(i){
-    var d=cwtOf(i)>0&&physOf(i)>0?wdiff(i):null;
-    h+='<div class="galrow"><button type="button" class="link" data-act="gocheck" data-id="'+i.id+'"><b>'+esc(i.lr)+'</b> · NOA '+i.noa+(d==null?'':' · diff '+(d>0?'+':'')+d.toFixed(2)+' kg')+'</button>'+thumbsHtml(i)+'</div>';
-  });
-  if(all.length)h+='<div class="big"><button type="button" class="btn ok" data-act="phpdf">Photo report (PDF)</button><button type="button" class="btn line2" data-act="phzip">All photos (ZIP)</button></div>';
-  return h+'</div></section>';
-}
-function pdfTxt(s){return String(s).replace(/[^\x20-\x7e]/g,'?').replace(/\\/g,'\\\\').replace(/\(/g,'\\(').replace(/\)/g,'\\)')}
-function pdfT(f,sz,x,y,s){return 'BT /'+f+' '+sz+' Tf 1 0 0 1 '+x+' '+y+' Tm ('+pdfTxt(s)+') Tj ET\n'}
-function pdfBuild(pages){
-  var enc=new TextEncoder(),parts=[],len=0,offs=[],N=4+pages.length*3;
-  function put(x){var u=typeof x==='string'?enc.encode(x):x;parts.push(u);len+=u.length}
-  put('%PDF-1.4\n');
-  offs[1]=len;put('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
-  var kids=[],k;for(k=0;k<pages.length;k++)kids.push((5+k*3)+' 0 R');
-  offs[2]=len;put('2 0 obj\n<< /Type /Pages /Kids ['+kids.join(' ')+'] /Count '+pages.length+' >>\nendobj\n');
-  offs[3]=len;put('3 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>\nendobj\n');
-  offs[4]=len;put('4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>\nendobj\n');
-  pages.forEach(function(pg,k){
-    var po=5+k*3,co=po+1,io=po+2;
-    offs[po]=len;put(po+' 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> /XObject << /Im0 '+io+' 0 R >> >> /Contents '+co+' 0 R >>\nendobj\n');
-    offs[co]=len;put(co+' 0 obj\n<< /Length '+enc.encode(pg.content).length+' >>\nstream\n');put(pg.content);put('\nendstream\nendobj\n');
-    offs[io]=len;put(io+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+pg.w+' /Height '+pg.h+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+pg.jpg.length+' >>\nstream\n');put(pg.jpg);put('\nendstream\nendobj\n');
-  });
-  var xo=len,x='xref\n0 '+(N+1)+'\n0000000000 65535 f \n',n;
-  for(n=1;n<=N;n++)x+=('0000000000'+offs[n]).slice(-10)+' 00000 n \n';
-  put(x);put('trailer\n<< /Size '+(N+1)+' /Root 1 0 R >>\nstartxref\n'+xo+'\n%%EOF\n');
-  var out=new Uint8Array(len),pos=0;parts.forEach(function(u){out.set(u,pos);pos+=u.length});
-  return out;
-}
-function b64bytes(d){var b=atob(String(d).split(',')[1]||''),u=new Uint8Array(b.length),k;for(k=0;k<b.length;k++)u[k]=b.charCodeAt(k);return u}
-function photoReport(kind){
-  var list=phAll();
-  if(!list.length){toast('No photos yet');return}
-  if(!DL){toast('Saving files is not available in this view');return}
-  if(kind==='zip'&&typeof JSZip==='undefined'){toast('ZIP is not available right now');return}
-  var br=hoBranch(),dt=dmy(S.idate||isoToday()),ia=String(S.ia||'').trim(),n=list.length;
-  var safe=(br||'branch').replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'branch';
-  var rows=list.map(function(x,k){var i=x.i;return {pid:x.p.id,w:x.p.w,h:x.p.h,scale:x.p.scale,ts:x.p.ts,lr:String(i.lr),stn:i.stn||'',noa:i.noa,a:awtOf(i),c:cwtOf(i),p:physOf(i),n:k+1}});
-  toast('Preparing photos...');
-  Promise.all(rows.map(function(r){return pget(r.pid)})).then(function(datas){
-    rows.forEach(function(r,k){r.data=datas[k]});
-    rows=rows.filter(function(r){return r.data});
-    if(!rows.length){toast('Photos not found on this device');return}
-    if(kind==='zip'){
-      var z=new JSZip(),csv=['LR No,Scale No,Taken at,File'];
-      function q(s){return '"'+String(s).replace(/"/g,'""')+'"'}
-      rows.forEach(function(r){
-        var fn='LR-'+r.lr.replace(/[^A-Za-z0-9-]/g,'')+'_scale-'+(String(r.scale||'na').replace(/[^A-Za-z0-9-]/g,'')||'na')+'_'+r.n+'.jpg';
-        z.file(fn,String(r.data).split(',')[1],{base64:true});
-        csv.push([r.lr,r.scale,phStamp(r.ts),fn].map(q).join(','));
-      });
-      z.file('index.csv',csv.join('\n'));
-      return z.generateAsync({type:'uint8array'}).then(function(u){return DL.save({filename:'Scale-photos-'+safe+'-'+dt+'.zip',data:u})}).then(function(){toast('Photos saved')},function(e){if(!e||e.code!=='declined')toast('Could not save the ZIP')});
-    }
-    var pages=rows.map(function(r){
-      var d=r.c>0&&r.p>0?r.p-r.c:null,mw=515,mh=640,k=Math.min(mw/r.w,mh/r.h),dw=Math.round(r.w*k),dh=Math.round(r.h*k),px=40+Math.round((mw-dw)/2),py=690-dh;
-      var c=pdfT('F2',16,40,805,'Consignment weight evidence')+pdfT('F1',11,40,786,'Branch: '+(br||'-')+'    Inspection date: '+dt)+pdfT('F2',14,40,760,'LR No: '+r.lr)+
-        pdfT('F1',11,40,742,'Booking Stn: '+(r.stn||'-')+'    NOA: '+r.noa)+
-        pdfT('F1',11,40,724,'Actual: '+(r.a>0?rd2(r.a):'-')+' kg    Charged: '+(r.c>0?rd2(r.c):'-')+' kg    Physical: '+rd2(r.p)+' kg    Diff (physical - charged): '+(d==null?'-':rd2(d))+' kg')+
-        pdfT('F2',11,40,706,'Scale no: '+(r.scale||'-')+'    Photo taken: '+phStamp(r.ts))+
-        'q '+dw+' 0 0 '+dh+' '+px+' '+py+' cm /Im0 Do Q\n'+pdfT('F1',9,40,28,'Name of IA: '+ia+'    Photo '+r.n+' of '+n);
-      return {content:c,w:r.w,h:r.h,jpg:b64bytes(r.data)};
-    });
-    return DL.save({filename:'Scale-photos-'+safe+'-'+dt+'.pdf',data:pdfBuild(pages)}).then(function(){toast('Photo report saved')},function(e){if(!e||e.code!=='declined')toast('Could not save the PDF')});
-  });
 }
 /* ---------- HO weight report (UNDERWEIGHT format) ---------- */
 function isoDate(t){var d=new Date(t);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
@@ -1420,10 +1336,9 @@ function cftOf(i){
 function cftK(i){return (i.cft&&i.cft.k!=null&&i.cft.k!=='')?i.cft.k:S.kgf}
 function cftWt(i){return cftOf(i)*(parseFloat(cftK(i))||0)}
 function cftBlock(i){
-  if(!isW(i))return '';
   if(!i.cft)i.cft={u:'in',k:S.kgf,rows:[{l:'',w:'',h:'',q:String(i.noa)}]};
   var c=i.cft;
-  var h='<div class="cft'+(cftMissing(i)&&physOf(i)>0?' need':'')+'"><div class="cft-h"><b>CFT (required for W): length × width × height</b><select class="cu" id="cu-'+i.id+'" data-id="'+i.id+'" aria-label="Unit">'+[['in','Inches'],['ft','Feet'],['cm','cm']].map(function(u){return '<option value="'+u[0]+'"'+(c.u===u[0]?' selected':'')+'>'+u[1]+'</option>'}).join('')+'</select></div>';
+  var h='<div class="cft'+(cftMissing(i)&&physOf(i)>0?' need':'')+'"><div class="cft-h"><b>CFT ('+(isW(i)?'required for W':'optional')+'): length × width × height</b><select class="cu" id="cu-'+i.id+'" data-id="'+i.id+'" aria-label="Unit">'+[['in','Inches'],['ft','Feet'],['cm','cm']].map(function(u){return '<option value="'+u[0]+'"'+(c.u===u[0]?' selected':'')+'>'+u[1]+'</option>'}).join('')+'</select></div>';
   h+='<p class="hint">Measure one article. Same size for all? Keep Qty as the NOA. Different size? Add another size.</p>';
   h+='<div class="ch"><span>Length</span><span>Width</span><span>Height</span><span>Qty</span><span></span></div>';
   c.rows.forEach(function(r,k){
@@ -1436,7 +1351,7 @@ function cftBlock(i){
 }
 function extraHtml(i){
   var p=[];
-  if(isW(i)&&cftOf(i)>0)p.push('<b>CFT:</b> '+cftOf(i).toFixed(2)+' ('+cftWt(i).toFixed(2)+' kg)');
+  if(cftOf(i)>0)p.push('<b>CFT:</b> '+cftOf(i).toFixed(2)+' ('+cftWt(i).toFixed(2)+' kg)');
   if(i.hist&&i.hist.length>1)p.push('<b>Found in rounds:</b> '+i.hist.join(' + '));
   var wb=wbadge(i);if(wb)p.push(wb);
   if(cftMissing(i)&&physOf(i)>0)p.push('<span class="wbadge bad">CFT missing</span>');
@@ -1444,14 +1359,14 @@ function extraHtml(i){
   return (p.length?'<p class="rmk">'+p.join(' &nbsp;·&nbsp; ')+'</p>':'')+(i.remark?'<p class="rnote"><b>REMARK</b>'+esc(i.remark)+'</p>':'');
 }
 function cftSection(){
-  var w=S.items.filter(isW);if(!w.length)return '';
+  var w=S.items.filter(function(i){return isW(i)||cftDims(i)});if(!w.length)return '';
   var tot=0,totw=0;
   var rows=w.map(function(i){
     var c=cftOf(i);tot+=c;totw+=cftWt(i);
     var dims=i.cft?i.cft.rows.filter(function(r){return parseFloat(r.l)>0&&parseFloat(r.w)>0&&parseFloat(r.h)>0}).map(function(r){return r.l+'×'+r.w+'×'+r.h+(r.q?' ('+r.q+')':'')}).join(', '):'';
     return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td class="n">'+i.noa+'</td><td>'+esc(i.stn)+'</td><td>'+esc(dims?dims+' '+i.cft.u:'not entered')+'</td><td class="n"><b>'+(c?c.toFixed(2):'-')+'</b></td><td class="n">'+(c?cftWt(i).toFixed(2):'-')+'</td></tr>';
   }).join('');
-  return '<section class="grp st-info"><header><h3>W consignments · CFT</h3><span>'+w.length+' LRs · total '+tot.toFixed(2)+' CFT · '+totw.toFixed(2)+' kg</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th class="n">NOA</th><th>Stn</th><th>Size (qty)</th><th class="n">CFT</th><th class="n">Weight kg</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
+  return '<section class="grp st-info"><header><h3>CFT</h3><span>'+w.length+' LRs · total '+tot.toFixed(2)+' CFT · '+totw.toFixed(2)+' kg</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th class="n">NOA</th><th>Stn</th><th>Size (qty)</th><th class="n">CFT</th><th class="n">Weight kg</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
 function chartHtml(){
   var h='<section class="grp"><header><h3>Colour chart</h3><span>Every LR in sheet order. Match it with the printed sheet.</span></header>'+
@@ -1495,13 +1410,13 @@ function renderSummary(){
   h+=tilePanel(g);
   h+='<p class="arts">Articles on sheet <b>'+c.noa+'</b> · found <b>'+c.found+'</b> · missing <b>'+(c.noa-c.found)+'</b></p>';
   h+=weightDash();
-  h+=photoSection();
   h+=chartHtml();
   h+=cftMissingSection();
   h+=remarkSection();
   h+=labourSection();
   h+=hoSection();
   h+=branchSection();
+  h+=teamSection();
   h+='<div class="acts"><button type="button" class="btn line" data-act="copy">Copy summary text</button><button type="button" class="btn line" data-act="xlsx">Excel of checked weights ('+wtItems().length+')</button></div>';
 
   h+='<section class="grp st-bad"><header><h3>Red · Not found</h3><span>'+g.bad.length+' LRs · '+sumNoa(g.bad)+' articles</span></header>'+
@@ -1572,26 +1487,6 @@ document.addEventListener('click',function(e){
       try{var rp=localStorage.getItem(KEY+'.prev');if(rp){localStorage.setItem(KEY,rp);if(load()){setup();show('work');refresh();toast('Previous session restored')}}}catch(e){}
       break;
     case 'xlsx':exportWeights();break;
-    case 'phcam':case 'phgal':{
-      var pi=S.items[id];if(!pi)return;
-      var sc=$('.scalein[data-id="'+id+'"]'),sv=((sc&&sc.value)||'').trim();
-      if(!sv){toast('Enter the scale number first');if(sc)sc.focus();return}
-      S.scale=sv;S.phTarget=id;
-      var pin=$(act==='phcam'?'#phcam':'#phgal');if(pin){pin.value='';pin.click()}
-      break;
-    }
-    case 'phview':phView(el.getAttribute('data-pid'));break;
-    case 'phclose':{var po=document.getElementById('phov');if(po)po.hidden=true;S.confirmPh=null;break}
-    case 'phdel':{
-      var dp=el.getAttribute('data-pid');
-      if(S.confirmPh!==dp){S.confirmPh=dp;phView(dp);break}
-      S.confirmPh=null;var df=phFind(dp);
-      if(df){df.i.photos=phList(df.i).filter(function(p){return p.id!==dp});pdelete(dp);save()}
-      var po2=document.getElementById('phov');if(po2)po2.hidden=true;
-      refresh();toast('Photo removed');break;
-    }
-    case 'phpdf':photoReport('pdf');break;
-    case 'phzip':photoReport('zip');break;
     case 'brsave':brSaveNow();break;
     case 'hoxlsx':brStatement(null,'ho');break;
     case 'brho':brStatement(id,'ho');break;
@@ -1603,7 +1498,6 @@ document.addEventListener('click',function(e){
       if(S.confirmDel!==id){S.confirmDel=id;brRefresh();setTimeout(function(){if(S.confirmDel===id){S.confirmDel=null;brRefresh()}},4000);break}
       S.confirmDel=null;
       var gone=brList().filter(function(x){return x.id===id})[0];
-      if(gone&&gone.snap&&S.bid!==id)(gone.snap.items||[]).forEach(function(it){(it.photos||[]).forEach(function(p){pdelete(p.id)})});
       var bl=brList().filter(function(x){return x.id!==id});brWrite(bl);
       if(S.bid===id){S.bid=null;S.bname='';save()}
       brRefresh();toast('Saved branch deleted');if(!$('#work').hidden)refresh();break;
@@ -1621,7 +1515,6 @@ document.addEventListener('click',function(e){
       if(sp.pw)sp.pw.at=Date.now();
       save();
       toast('Weight saved: LR …'+lrBase(sp.lr).slice(-4)+' · '+physOf(sp).toFixed(2)+' kg');
-      if(needPhoto(sp)&&!phList(sp).length){toast('Weight saved. It differs from charged by '+wdiff(sp).toFixed(2)+' kg. Add the scale photo for this LR.');refresh();break}
       if(S.q){if(matches(S.q).length===1){S.q='';var qq=$('#q');qq.value='';qq.focus()}}else S.open=null;
       refresh();break;
     }
@@ -1641,6 +1534,17 @@ document.addEventListener('click',function(e){
     case 'toggle':S.open=S.open===id?null:id;renderResults();break;
     case 'all':mark(id,S.items[id].noa);break;
     case 'none':mark(id,0);break;
+    case 'tmsend':tmSend(false);break;
+    case 'tmshare':tmSend(true);break;
+    case 'tmpick':{var tf=$('#tmfile');if(tf)tf.click();break}
+    case 'tmmine':if(S.team){tmClear(id,el.getAttribute('data-t'));refresh()}break;
+    case 'tmmineall':if(S.team){S.team.clashes=[];refresh()}break;
+    case 'tmtheirs':case 'tmboth':if(S.team){var ty=el.getAttribute('data-t')||'weight',cc=S.team.clashes.filter(function(c){return c.id===id&&c.type===ty})[0];if(cc){var it9=S.items[id];
+      if(ty==='stock'&&act==='tmboth'){var m9=it9.found||0,t9=cc.th.found||0;it9.hist=((it9.hist&&it9.hist.length)?it9.hist:[m9]).concat(t9);it9.found=Math.min(it9.noa,m9+t9);it9.cr=false}
+      else if(ty==='stock'){it9.found=cc.th.found;it9.hist=cc.th.hist;it9.cr=cc.th.cr}
+      else if(act==='tmboth'){var base=tmRows(it9.pw);it9.pw={rows:base.concat(cc.th.pw.rows)}}
+      else it9.pw={rows:cc.th.pw.rows};
+      tmClear(id,ty);save();refresh()}}break;
     case 'crstock':markCr(id);break;
     case 'part':mark(id,parseInt(el.getAttribute('data-n'),10));break;
     case 'partnum':{
@@ -1761,7 +1665,8 @@ document.addEventListener('change',function(e){
 });
 document.addEventListener('input',function(e){
   var t=e.target;if(!t.classList)return;
-  if(t.classList.contains('hobr')){S.hobr=t.value;save()}
+  if(t.classList.contains('tmname')){TMN=t.value.replace(/\s+/g,' ').trim();try{localStorage.setItem(TMK,TMN)}catch(e){}}
+  else if(t.classList.contains('hobr')){S.hobr=t.value;save()}
   else if(t.classList.contains('hoia')){S.ia=t.value;save()}
 });
 document.addEventListener('change',function(e){
@@ -1769,12 +1674,12 @@ document.addEventListener('change',function(e){
   if(t.classList&&t.classList.contains('hodate')){S.idate=t.value;save()}
 });
 document.addEventListener('input',function(e){
-  var t=e.target;if(t.classList&&t.classList.contains('scalein'))S.scale=t.value;
+  var t=e.target;
 });
 document.addEventListener('change',function(e){
   var t=e.target;
-  if(t&&(t.id==='phcam'||t.id==='phgal')&&t.files&&t.files[0])phTake(t.files[0]);
 });
+$('#tmfile').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';if(!f)return;var r=new FileReader();r.onload=function(){var d=null;try{d=JSON.parse(String(r.result))}catch(e){}if(!d){toast('Could not read this file');return}tmMerge(d)};r.onerror=function(){toast('Could not read this file')};r.readAsText(f)});
 $('#file').addEventListener('change',function(){handleFile(this.files&&this.files[0]);this.value=''});
 var drop=$('#drop');
 ['dragenter','dragover'].forEach(function(t){drop.addEventListener(t,function(e){e.preventDefault();drop.classList.add('over')})});
@@ -1787,7 +1692,8 @@ setTimeout(function(){var sp=$('#splash');if(sp){sp.classList.add('out');setTime
 var DL=null;
 try{if(window.claude&&window.claude.use){window.claude.use('downloads').then(function(d){DL=d||null}).catch(function(){})}}catch(e){}
 /* ---------- boot ---------- */
-if(load()){setup();show('work');refresh();toast('Your last session is back. Nothing was lost.')}
+try{indexedDB.deleteDatabase('lrchk-photos')}catch(e){}
+if(load()){S.items.forEach(function(i){delete i.photos});setup();show('work');refresh();toast('Your last session is back. Nothing was lost.')}
 else{show('upload');updRestore()}
 })();
 </script>
