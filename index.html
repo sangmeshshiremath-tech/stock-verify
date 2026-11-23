@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="author" content="Sangmesh Hiremath">
-<meta name="description" content="Stock Verify: branch stock and weight verification app. Created by Sangmesh Hiremath.">
+<meta name="description" content="Stock Verify: branch stock and weight verification app, by Sangmesh Hiremath.">
 <meta property="og:title" content="Stock Verify">
-<meta property="og:description" content="Branch stock and weight verification app. Created by Sangmesh Hiremath.">
+<meta property="og:description" content="Branch stock and weight verification app, by Sangmesh Hiremath.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#2a3fb5">
 <meta name="mobile-web-app-capable" content="yes">
@@ -40,7 +40,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
@@ -97,11 +97,20 @@ button{cursor:pointer}
 
 /* ---------- upload view ---------- */
 .hero{display:flex;flex-direction:column;gap:6px;padding-block:20px 18px}
-.by{font-size:13px;font-weight:600;letter-spacing:.02em}
+.by{font-size:13px;font-weight:500;letter-spacing:.03em;display:flex;align-items:baseline;gap:6px;flex-wrap:nowrap;white-space:nowrap}
+.by .lbl{opacity:.8;font-size:13px}
 .hero .by{color:rgba(255,255,255,.92)}
-.brand .by{font-size:11.5px;color:var(--ink2);line-height:1.2}
+.hero .by .lbl{color:rgba(255,255,255,.85);opacity:1}
+.hero .by .nm{font-size:22px}
+.brand .by{color:rgba(255,255,255,.85);line-height:1.1;margin-top:1px}
+.brand .by .nm{font-size:16px}
+.brand .by .lbl{color:rgba(255,255,255,.8);font-size:12px}
+.nm{font-family:'Dancing Script','Segoe Script','Brush Script MT',cursive;font-weight:700;color:#FFC83D;white-space:nowrap}
 .credit{text-align:center;font-size:12.5px;color:var(--ink2);padding:18px 0 96px}
-.credit b{color:var(--ink)}
+.credit .nm{font-size:19px;color:#C2410C}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .credit .nm{color:#FFC83D}}
+:root[data-theme="dark"] .credit .nm{color:#FFC83D}
+
 .hero h1{font-family:var(--f-head);font-weight:600;font-size:34px;line-height:1.1;margin:0;letter-spacing:-.01em;text-wrap:balance}
 .hero p{margin:0;color:var(--ink2);max-width:56ch}
 .drop{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;padding:30px 18px;border:2px dashed var(--line);border-radius:16px;background:var(--surface);cursor:pointer;transition:border-color .15s,background .15s}
@@ -358,6 +367,7 @@ body::before{background:var(--bar1)}
 .bra .btn{flex:1;min-width:90px}
 .artsl{margin-top:4px;font-size:13px;color:var(--ink2)}
 .labbox{padding:12px;display:flex;flex-direction:column;gap:10px}
+div.lrchip{cursor:default}
 .tmnote{font-size:13px;color:var(--ink2);margin:0}
 .tmres{background:var(--accent-bg);border:1px solid var(--accent);border-radius:10px;padding:10px 12px;font-size:14px}
 .tmcl{display:grid;gap:6px;border:1px solid var(--warn-line);background:var(--warn-bg);border-radius:10px;padding:10px 12px}
@@ -375,6 +385,10 @@ body::before{background:var(--bar1)}
 .tpanel.tp-ok{background:var(--ok-bg);border-color:var(--ok-line)}
 .tpanel.tp-warn{background:var(--warn-bg);border-color:var(--warn-line)}
 .tpanel.tp-bad{background:var(--bad-bg);border-color:var(--bad-line)}
+.tpanel.tp-loss{background:var(--loss-bg);border-color:var(--loss-line)}
+.tpanel.tp-rem{background:var(--note-bg);border-color:var(--note-line)}
+.tpanel.tp-wt,.tpanel.tp-lift,.tpanel.tp-excess,.tpanel.tp-crr,.tpanel.tp-ho{background:var(--accent-bg);border-color:var(--accent)}
+div.lrchip{cursor:default}
 .tph{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .lrchip{display:grid;gap:0;text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 10px;font-size:15px;cursor:pointer}
 .lrchip .pre{color:var(--ink2)}
@@ -445,7 +459,7 @@ details.grp summary span{font-family:var(--f-body);font-size:13px;font-weight:40
   <div class="hero">
     <div class="logo">LR</div>
     <h1>Stock Verify</h1>
-    <div class="by">Created by Sangmesh Hiremath</div>
+    <div class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></div>
     <p>Upload the branch stock sheet. When someone calls out the last 4 digits of an LR, type them and mark what you see on the floor.</p>
   </div>
   <input id="file" class="sr" type="file" accept=".xlsx,.xls,.xlsm,.csv">
@@ -483,7 +497,7 @@ details.grp summary span{font-family:var(--f-body);font-size:13px;font-weight:40
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by">by Sangmesh Hiremath</span><span id="saved" class="saved"></span></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -505,7 +519,7 @@ details.grp summary span{font-family:var(--f-body);font-size:13px;font-weight:40
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">Stock Verify · created by <b>Sangmesh Hiremath</b></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -748,10 +762,17 @@ function renderFilters(c){
   var el=$('#filters');el.hidden=!!S.q||!!S.xform;
   el.innerHTML=f.map(function(x){return '<button type="button" class="fchip st-'+x[0]+(S.filter===x[0]?' on':'')+'" data-act="filter" data-f="'+x[0]+'">'+x[1]+' <b>'+x[2]+'</b></button>'}).join('')+'<button type="button" class="fchip addx" data-act="xopen" data-k="excess">+ Excess / CR raised / HO line</button>';
 }
+function wtLabel(i){
+  var a=awtOf(i),c=cwtOf(i),p=[];
+  if(a>0)p.push('Actual '+kgS(a)+' kg');
+  if(c>0)p.push('Charged '+kgS(c)+' kg');
+  if(!p.length&&i.wt)p.push(i.wt+' kg');
+  return p.join(' · ');
+}
 function rowHtml(i,open){
   var s=st(i);
   var pill=stLab(i,s);
-  var meta=[i.desc,i.stn,i.wt?i.wt+' kg':'',i.days!==''?i.days+(String(i.days)==='1'?' day':' days'):''].filter(Boolean).join(' · ');
+  var meta=[i.desc,i.stn,wtLabel(i),i.days!==''?i.days+(String(i.days)==='1'?' day':' days'):''].filter(Boolean).join(' · ');
   return '<article class="row st-'+s+(wlossOf(i)?' wloss':'')+'" data-id="'+i.id+'">'+
     '<button type="button" class="head" data-act="toggle" data-id="'+i.id+'" aria-expanded="'+(open?'true':'false')+'">'+
     '<span class="sl">'+esc(i.sl)+'</span><span class="lr">'+lrHtml(i.lr)+'</span>'+
@@ -1418,23 +1439,57 @@ function sumSearchHtml(q){
   }
   return h+'</div>';
 }
-function tilePanel(g){
-  var k=S.tileOpen,l=k&&g[k];if(!l||!l.length)return '';
-  var t={ok:'All found',warn:'Short',bad:'Not found',idle:'Not checked',cr:'CR stock'}[k];
-  return '<div class="tpanel tp-'+k+'" id="tpanel"><div class="tph"><b>'+t+' · '+l.length+' LR'+(l.length>1?'s':'')+'</b><button type="button" class="link" data-act="tileclose">Close</button></div><div class="chiprow">'+l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr)+'</span><small>'+(k==='warn'?i.found+' of '+i.noa+' found':'NOA '+i.noa)+'</small></button>'}).join('')+'</div><p class="hint2">Tap an LR to open it.</p></div>';
+var TTITLE={total:'All LRs on the sheet',ok:'All found',warn:'Short',bad:'Not found',idle:'Not checked',cr:'CR stock (delivered during audit)',wt:'Weights taken',lift:'Labour lifted on scale',loss:'Weight loss (physical more than charged)',rem:'LRs with a remark',excess:'Excess',crr:'CR raised',ho:'HO line stock'};
+function tileData(k){
+  var g=groups(),ex=k==='excess'||k==='crr'||k==='ho';
+  if(ex){var kind=k==='crr'?'cr':k;return {ex:true,list:exList(kind)}}
+  var l;
+  if(k==='total')l=S.items.slice();
+  else if(k==='wt'||k==='lift')l=wtItems();
+  else if(k==='loss')l=S.items.filter(function(i){return wlossOf(i)>0}).sort(function(a,b){return wlossOf(b)-wlossOf(a)});
+  else if(k==='rem')l=S.items.filter(hasRem);
+  else l=g[k]||[];
+  return {ex:false,list:l};
+}
+function tileChipSmall(k,i){
+  if(k==='warn')return i.found+' of '+i.noa+' found';
+  if(k==='wt')return physOf(i).toFixed(2)+' kg';
+  if(k==='lift')return liftedOf(i).toFixed(2)+' kg lifted';
+  if(k==='loss')return '+'+wlossOf(i).toFixed(2)+' kg';
+  if(k==='rem')return String(i.remark).slice(0,40);
+  if(k==='total')return stLab(i);
+  return 'NOA '+i.noa;
+}
+function tilePanel(){
+  var k=S.tileOpen;if(!k)return '';
+  var d=tileData(k),l=d.list;if(!l.length)return '';
+  var h='<div class="tpanel tp-'+k+'" id="tpanel"><div class="tph"><b>'+(TTITLE[k]||k)+' · '+l.length+(d.ex?(l.length>1?' entries':' entry'):' LR'+(l.length>1?'s':''))+'</b><button type="button" class="link" data-act="tileclose">Close</button></div><div class="chiprow">';
+  if(d.ex)h+=l.map(function(x){return '<div class="lrchip"><span class="lrh">'+(x.lr||x.lr4?esc(x.lr||x.lr4):'No LR / name')+'</span><small>'+x.qty+' article'+(+x.qty>1?'s':'')+(x.crno?' · CR '+esc(x.crno):'')+(x.wt?' · '+esc(x.wt)+' kg':'')+(x.desc?' · '+esc(x.desc):'')+'</small></div>'}).join('');
+  else h+=l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr)+'</span><small>'+esc(tileChipSmall(k,i))+'</small></button>'}).join('');
+  h+='</div>'+(d.ex?'':'<p class="hint2">Tap an LR to open it.</p>')+'</div>';
+  return h;
 }
 function renderSummary(){
   if(S.q.trim()){$('#pane-sum').innerHTML=sumSearchHtml(S.q.trim());return}
   var c=counts(),g=groups(),h='<div class="sum">';
+  var ws=wtStats();
+  function tb(k,cls,lab,val,small){return '<button type="button" class="tile '+cls+' tilebtn'+(S.tileOpen===k?' on':'')+'" data-act="tile" data-k="'+k+'"><span>'+lab+'</span><b>'+val+'</b><small>'+small+'</small></button>'}
   h+='<div class="tiles">'+
-    '<div class="tile"><span>Total LRs</span><b>'+c.total+'</b><small>'+c.noa+' articles</small></div>'+
-    '<button type="button" class="tile st-ok tilebtn'+(S.tileOpen==='ok'?' on':'')+'" data-act="tile" data-k="ok"><span>All found</span><b>'+c.ok+'</b><small>'+sumNoa(g.ok)+' articles</small></button>'+
-    '<button type="button" class="tile st-warn tilebtn'+(S.tileOpen==='warn'?' on':'')+'" data-act="tile" data-k="warn"><span>Short</span><b>'+c.warn+'</b><small>'+g.warn.reduce(function(s,i){return s+i.noa-i.found},0)+' articles missing</small></button>'+
-    '<button type="button" class="tile st-bad tilebtn'+(S.tileOpen==='bad'?' on':'')+'" data-act="tile" data-k="bad"><span>Not found</span><b>'+c.bad+'</b><small>'+sumNoa(g.bad)+' articles</small></button>'+
-    '<button type="button" class="tile tilebtn'+(S.tileOpen==='idle'?' on':'')+'" data-act="tile" data-k="idle"><span>Not checked</span><b>'+c.idle+'</b><small>'+sumNoa(g.idle)+' articles</small></button>'+(c.cr?'<button type="button" class="tile st-cr tilebtn'+(S.tileOpen==='cr'?' on':'')+'" data-act="tile" data-k="cr"><span>CR stock</span><b>'+c.cr+'</b><small>'+sumNoa(g.cr)+' articles delivered</small></button>':'')+
-    '<div class="tile st-info"><span>Weights taken</span><b>'+wtStats().n+'</b><small>of '+c.total+' LRs</small></div>'+(remCount()?'<div class="tile st-note"><span>Remarks</span><b>'+remCount()+'</b><small>LRs with a remark</small></div>':'')+(wtStats().n?'<div class="tile st-info"><span>Lifted on scale</span><b>'+liftedTotal().toFixed(1)+'</b><small>kg · '+tonStr(liftedTotal())+'</small></div>':'')+(wtStats().n?'<div class="tile st-loss"><span>Weight loss</span><b>'+wtStats().loss+'</b><small>'+wtStats().kg.toFixed(2)+' kg over charged</small></div>':'')+(exList('excess').length?'<div class="tile st-info"><span>Excess</span><b>'+exList('excess').length+'</b><small>'+exQty('excess')+' articles</small></div>':'')+(exList('cr').length?'<div class="tile st-info"><span>CR raised</span><b>'+exList('cr').length+'</b><small>'+exQty('cr')+' articles</small></div>':'')+(exList('ho').length?'<div class="tile st-info"><span>HO line stock</span><b>'+exList('ho').length+'</b><small>'+exQty('ho')+' articles</small></div>':'')+
+    tb('total','','Total LRs',c.total,c.noa+' articles')+
+    tb('ok','st-ok','All found',c.ok,sumNoa(g.ok)+' articles')+
+    tb('warn','st-warn','Short',c.warn,g.warn.reduce(function(s,i){return s+i.noa-i.found},0)+' articles missing')+
+    tb('bad','st-bad','Not found',c.bad,sumNoa(g.bad)+' articles')+
+    tb('idle','','Not checked',c.idle,sumNoa(g.idle)+' articles')+
+    tb('cr','st-cr','CR stock',c.cr,sumNoa(g.cr)+' articles delivered')+
+    tb('wt','st-info','Weights taken',ws.n,'of '+c.total+' LRs')+
+    (remCount()?tb('rem','st-note','Remarks',remCount(),'LRs with a remark'):'')+
+    (ws.n?tb('lift','st-info','Lifted on scale',liftedTotal().toFixed(1),'kg · '+tonStr(liftedTotal())):'')+
+    (ws.n?tb('loss','st-loss','Weight loss',ws.loss,ws.kg.toFixed(2)+' kg over charged'):'')+
+    tb('excess','st-info','Excess',exList('excess').length,exQty('excess')+' articles')+
+    tb('crr','st-info','CR raised',exList('cr').length,exQty('cr')+' articles')+
+    tb('ho','st-info','HO line stock',exList('ho').length,exQty('ho')+' articles')+
     '</div>';
-  h+=tilePanel(g);
+  h+=tilePanel();
   h+='<p class="arts">Articles on sheet <b>'+c.noa+'</b> · found <b>'+c.found+'</b> · missing <b>'+(c.noa-c.found)+'</b></p>';
   h+=weightDash();
   h+=chartHtml();
@@ -1545,9 +1600,9 @@ document.addEventListener('click',function(e){
       if(S.q){if(matches(S.q).length===1){S.q='';var qq=$('#q');qq.value='';qq.focus()}}else S.open=null;
       refresh();break;
     }
-    case 'tile':{var tk=el.getAttribute('data-k');if(!groups()[tk].length){toast('No LRs in this group');break}S.tileOpen=S.tileOpen===tk?null:tk;renderSummary();break}
+    case 'tile':{var tk=el.getAttribute('data-k');if(!tileData(tk).list.length){toast('Nothing here yet');break}S.tileOpen=S.tileOpen===tk?null:tk;renderSummary();break}
     case 'tileclose':S.tileOpen=null;renderSummary();break;
-    case 'tilego':{var tg=el.getAttribute('data-k');if(!groups()[tg].length){toast('No LRs in this group');break}S.tileOpen=tg;S.tab='sum';S.q='';$('#q').value='';refresh();window.scrollTo(0,0);break}
+    case 'tilego':{var tg=el.getAttribute('data-k');if(!tileData(tg).list.length){toast('Nothing here yet');break}S.tileOpen=tg;S.tab='sum';S.q='';$('#q').value='';refresh();window.scrollTo(0,0);break}
     case 'gocheck':S.tab='check';S.filter='all';S.open=id;refresh();window.scrollTo(0,0);setTimeout(function(){var rw=document.querySelector('.row[data-id="'+id+'"]');if(rw)rw.scrollIntoView({block:'start'})},60);break;
     case 'sample':start('Sample: GKP stock statement, 16 Oct 2026',sampleItems(),0,true);break;
     case 'map-go':{
