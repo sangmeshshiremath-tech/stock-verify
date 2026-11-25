@@ -614,6 +614,16 @@ details.cftd{display:block}
 details.cftd[open]{display:grid;gap:8px}
 details.cftd.need{border:2px solid var(--bad-solid)}
 details.cftd.need .cfts{color:var(--bad);font-weight:700}
+
+/* ----- never wider than the screen ----- */
+html,body{max-width:100%;overflow-x:hidden}
+.deck{grid-template-columns:minmax(0,1fr)}
+.deck-top{flex-wrap:wrap;row-gap:4px}
+.brand{flex:1 1 150px}
+.bar-txt{flex:0 1 auto;flex-wrap:wrap;white-space:normal;justify-content:flex-end;gap:4px 10px}
+.qbox,.q{min-width:0;max-width:100%}
+.col,.wrap,section{min-width:0;max-width:100%}
+.ver{margin-top:2px;font-size:11px;color:var(--ink2);opacity:.7}
 </style>
 
 <div class="wrap"><div class="col">
@@ -682,7 +692,7 @@ details.cftd.need .cfts{color:var(--bad);font-weight:700}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 25</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
