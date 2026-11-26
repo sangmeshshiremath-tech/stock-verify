@@ -635,6 +635,26 @@ body.kb .wrap{padding-bottom:40vh}
 html{scroll-padding-top:150px;scroll-padding-bottom:110px}
 .deck{padding-block:8px 12px;gap:6px}
 .deck .saved{font-size:11.5px}
+
+/* ----- only the search bar stays pinned; the big header scrolls away ----- */
+.deck{position:static!important;border-radius:0!important;box-shadow:none!important;background:linear-gradient(90deg,var(--bar1),var(--bar2));padding-bottom:6px}
+#qrow{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px))) calc(-1*max(16px,env(safe-area-inset-right,0px)));padding:6px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px));background:linear-gradient(90deg,var(--bar1),var(--bar2));border-radius:0 0 24px 24px;box-shadow:0 8px 18px -8px rgba(8,16,60,.6)}
+body.kb .deck .deck-top,body.kb .deck .bar{display:flex}
+body.kb .deck .bar{display:block}
+body.kb .deck{padding-block:10px 6px;gap:10px}
+.verbtn{align-self:flex-start;margin-top:4px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;font-size:11.5px;padding:3px 10px;min-height:0}
+.verbtn.new{background:#FFC83D;color:#3a2600;border-color:#FFC83D;font-weight:700}
+
+#qrow{display:flex;align-items:center;gap:8px}
+#qrow .qbox{flex:1;min-width:0}
+.dashbtn{flex:0 0 auto;height:56px;min-width:56px;border-radius:28px;border:0;background:rgba(255,255,255,.2);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;padding:0 10px;font-size:10.5px;font-weight:600;letter-spacing:.02em}
+.dashbtn svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.dashbtn.back{background:#FFC83D;color:#3a2600}
+
+.dashgrp{display:flex;gap:6px;flex:0 0 auto}
+.tbb{height:56px;min-width:54px;border-radius:18px;border:0;background:rgba(255,255,255,.16);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 6px;font-size:10.5px;font-weight:600}
+.tbb svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tbb.on{background:#FFC83D;color:#3a2600}
 </style>
 
 <div class="wrap"><div class="col">
@@ -681,7 +701,7 @@ html{scroll-padding-top:150px;scroll-padding-bottom:110px}
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v29 · tap to refresh app</button></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -689,13 +709,14 @@ html{scroll-padding-top:150px;scroll-padding-bottom:110px}
       <div id="bar-txt" class="bar-txt"></div>
     </div>
     <div id="bar" class="bar" aria-hidden="true"></div>
+  </div>
     <div id="qrow">
       <div class="qbox">
         <input id="q" class="q" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="12" placeholder="Last 4 digits of LR" aria-label="Last 4 digits of LR number">
         <button id="qclear" type="button" class="qx" aria-label="Clear digits" data-act="qclear" hidden>&times;</button>
       </div>
+      <div id="dashgrp" class="dashgrp"><button type="button" id="tbcheck" class="tbb on" aria-label="Check LRs"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 12l2 2 4-4"/></svg><span class="dlab">Check</span></button><button type="button" id="tbsum" class="tbb" aria-label="Open summary"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 16v-4M12 16V8M16 16v-6"/></svg><span class="dlab">Summary</span></button></div>
     </div>
-  </div>
   <div id="fileline" class="fileline"></div>
   <div id="pane-check">
     <div id="filters" class="filters"></div>
@@ -703,7 +724,7 @@ html{scroll-padding-top:150px;scroll-padding-bottom:110px}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 26</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 29</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -966,7 +987,7 @@ function rowHtml(i,open){
 }
 function bringRow(){
   var rw=document.querySelector('#results .row');if(!rw)return;
-  var dk=document.querySelector('.deck');
+  var dk=document.querySelector('#qrow');
   rw.style.scrollMarginTop=((dk?dk.offsetHeight:140)+6)+'px';
   rw.scrollIntoView({block:'start',behavior:'auto'});
 }
@@ -2014,7 +2035,7 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var dk=function(){return document.querySelector('.deck')};
+  var dk=function(){return document.querySelector('#qrow')};
   function pad(){var d=dk(),h=d&&d.offsetHeight||140;document.documentElement.style.scrollPaddingTop=(h+10)+'px'}
   function isField(t){return t&&t.matches&&t.matches('input:not([type=file]):not([type=checkbox]),select,textarea')}
   var kt;
@@ -2029,6 +2050,41 @@ else{show('upload');updRestore()}
     },120);
   });
   window.addEventListener('resize',pad);setInterval(pad,1500);pad();
+})();
+
+(function(){
+  var APPV=29;
+  var vb=document.getElementById('verbtn');
+  function hard(){
+    try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
+    try{if(window.caches)caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}).then(go,go);else go()}catch(e){go()}
+    function go(){setTimeout(function(){location.href=location.pathname+'?r='+Date.now()},200)}
+  }
+  if(vb)vb.addEventListener('click',hard);
+  try{
+    if(location.protocol.indexOf('http')===0&&!/claudeusercontent|claude\.ai/.test(location.host)){
+      fetch(location.pathname+'?c='+Date.now(),{cache:'no-store'}).then(function(r){return r.text()}).then(function(t){
+        var m=t.match(/var APPV=(\d+)/);
+        if(m&&+m[1]>APPV&&vb){vb.textContent='New version '+m[1]+' ready · tap to update';vb.classList.add('new')}
+      }).catch(function(){});
+    }
+  }catch(e){}
+})();
+
+(function(){
+  var bc=document.getElementById('tbcheck'),bs=document.getElementById('tbsum');if(!bc||!bs)return;
+  function onSum(){var s=document.querySelector('#botnav [data-tab=sum]');return !!(s&&s.classList.contains('on'))}
+  function sync(){var s=onSum();bc.classList.toggle('on',!s);bs.classList.toggle('on',s);bc.setAttribute('aria-pressed',!s);bs.setAttribute('aria-pressed',s)}
+  [bc,bs].forEach(function(b){b.addEventListener('mousedown',function(e){e.preventDefault()})});
+  function go(sum){
+    if(sum&&!onSum()){var qc=document.getElementById('qclear');if(qc&&!qc.hidden)qc.click()}
+    if(sum!==onSum()){var t=document.querySelector('#botnav [data-tab='+(sum?'sum':'check')+']');if(t)t.click()}
+    try{document.activeElement&&document.activeElement.blur()}catch(e){}
+    window.scrollTo({top:0,behavior:'smooth'});setTimeout(sync,60);
+  }
+  bc.addEventListener('click',function(){go(false)});
+  bs.addEventListener('click',function(){go(true)});
+  setInterval(sync,300);sync();
 })();
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
