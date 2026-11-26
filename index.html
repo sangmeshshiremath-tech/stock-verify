@@ -616,7 +616,8 @@ details.cftd.need{border:2px solid var(--bad-solid)}
 details.cftd.need .cfts{color:var(--bad);font-weight:700}
 
 /* ----- never wider than the screen ----- */
-html,body{max-width:100%;overflow-x:hidden}
+html,body{max-width:100%}
+.wrap{overflow-x:clip}
 .deck{grid-template-columns:minmax(0,1fr)}
 .deck-top{flex-wrap:wrap;row-gap:4px}
 .brand{flex:1 1 150px}
@@ -624,6 +625,16 @@ html,body{max-width:100%;overflow-x:hidden}
 .qbox,.q{min-width:0;max-width:100%}
 .col,.wrap,section{min-width:0;max-width:100%}
 .ver{margin-top:2px;font-size:11px;color:var(--ink2);opacity:.7}
+
+/* ----- typing mode: keep the screen free while the keyboard is open ----- */
+body.kb .botnav,body.kb .fab{display:none!important}
+body.kb .deck .deck-top,body.kb .deck .bar{display:none}
+body.kb .deck{padding-block:8px;gap:0}
+body.kb .wrap{padding-bottom:40vh}
+.wrap{padding-bottom:140px}
+html{scroll-padding-top:150px;scroll-padding-bottom:110px}
+.deck{padding-block:8px 12px;gap:6px}
+.deck .saved{font-size:11.5px}
 </style>
 
 <div class="wrap"><div class="col">
@@ -692,7 +703,7 @@ html,body{max-width:100%;overflow-x:hidden}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 25</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 26</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -722,7 +733,7 @@ function save(){
 function showSaved(){
   var el=$('#saved');if(!el)return;
   el.className='saved'+(S.saveOk===false?' bad':'');
-  el.textContent=S.saveOk===false?'Not saving. This browser is blocking storage.':(S.savedAt?'Saved on this phone at '+S.savedAt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'Every entry is saved on this phone')
+  el.textContent=S.saveOk===false?'Not saving. This browser is blocking storage.':(S.savedAt?'Saved '+S.savedAt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'Every entry is saved on this phone')
 }
 function backupPrev(){try{var r=localStorage.getItem(KEY);if(r)localStorage.setItem(KEY+'.prev',r)}catch(e){}}
 function updRestore(){var b=$('#restoreBtn');if(!b)return;try{b.hidden=!localStorage.getItem(KEY+'.prev')}catch(e){b.hidden=true}}
@@ -1973,7 +1984,6 @@ else{show('upload');updRestore()}
   }
   document.addEventListener('pointerdown',function(e){
     var h=host(e.target);if(!h)return;
-    try{if(navigator.vibrate&&e.pointerType==='touch')navigator.vibrate(8)}catch(_){}
     if(rm)return;
     var r=h.getBoundingClientRect(),d=Math.max(r.width,r.height)*2.2;
     var s=document.createElement('span');s.className='rip';
@@ -1983,6 +1993,7 @@ else{show('upload');updRestore()}
     var kill=function(){s.classList.add('out');setTimeout(function(){s.remove()},320)};
     setTimeout(kill,420);
   },{passive:true});
+  document.addEventListener('click',function(e){if(host(e.target)){try{navigator.vibrate&&navigator.vibrate(8)}catch(_){}}});
   var fab=document.createElement('button');
   fab.type='button';fab.className='fab';fab.setAttribute('aria-label','Search LR');
   fab.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span>Search LR</span>';
@@ -2000,6 +2011,24 @@ else{show('upload');updRestore()}
   }
   window.addEventListener('scroll',upd,{passive:true});
   setInterval(upd,500);upd();
+})();
+
+(function(){
+  var dk=function(){return document.querySelector('.deck')};
+  function pad(){var d=dk(),h=d&&d.offsetHeight||140;document.documentElement.style.scrollPaddingTop=(h+10)+'px'}
+  function isField(t){return t&&t.matches&&t.matches('input:not([type=file]):not([type=checkbox]),select,textarea')}
+  var kt;
+  document.addEventListener('focusin',function(e){
+    var t=e.target;if(!isField(t))return;
+    clearTimeout(kt);document.body.classList.add('kb');pad();
+    if(t.id!=='q')setTimeout(function(){try{t.scrollIntoView({block:'center',behavior:'smooth'})}catch(_){}},260);
+  });
+  document.addEventListener('focusout',function(){
+    clearTimeout(kt);kt=setTimeout(function(){
+      if(!isField(document.activeElement)){document.body.classList.remove('kb');pad()}
+    },120);
+  });
+  window.addEventListener('resize',pad);setInterval(pad,1500);pad();
 })();
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}</script>
