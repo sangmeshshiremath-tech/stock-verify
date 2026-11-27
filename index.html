@@ -532,6 +532,8 @@ body.scrolled .deck{box-shadow:0 8px 20px -6px rgba(8,16,60,.55);border-radius:0
 .cc,.sg,.lrchip{border-radius:14px}
 .grp h3,details.grp summary{font-weight:500}
 .note{border-radius:14px}
+.nchips{display:flex;flex-wrap:wrap;gap:8px}
+.nchip{height:44px;padding:0 16px;border:1.5px solid var(--accent);border-radius:22px;background:var(--surface);color:var(--accent);font-size:17px;font-weight:500;letter-spacing:.5px}
 
 /* ----- bottom navigation (MD3: 80dp, pill indicator) ----- */
 .botnav{padding-top:12px;border-top:0;background:var(--surf2);box-shadow:0 -1px 0 var(--line)}
@@ -741,7 +743,7 @@ body[data-tab=wt] .fchip.addx{display:none}
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v37 · tap to refresh app</button></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v38 · tap to refresh app</button></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -752,7 +754,7 @@ body[data-tab=wt] .fchip.addx{display:none}
   </div>
     <div id="qrow">
       <div class="qbox">
-        <input id="q" class="q" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="12" placeholder="Last 4 digits of LR" aria-label="Last 4 digits of LR number">
+        <input id="q" class="q" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="16" placeholder="Last 4 digits (or more) of LR" aria-label="Last 4 digits of LR number">
         <button id="qclear" type="button" class="qx" aria-label="Clear digits" data-act="qclear" hidden>&times;</button>
       </div>
       <div id="dashgrp" class="dashgrp"><button type="button" id="tbcheck" class="tbb on" aria-label="Stock check"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 12l2 2 4-4"/></svg><span class="dlab">Stock</span></button><button type="button" id="tbwt" class="tbb" aria-label="Weight taking"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9h11l2 10.5h-15z"/><path d="M9.3 9a2.7 2.7 0 015.4 0"/><path d="M12 12.5v3"/></svg><span class="dlab">Weight</span></button><button type="button" id="tbsum" class="tbb" aria-label="Open summary"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 16v-4M12 16V8M16 16v-6"/></svg><span class="dlab">Summary</span></button></div>
@@ -764,7 +766,7 @@ body[data-tab=wt] .fchip.addx{display:none}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 37</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 38</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -1229,6 +1231,12 @@ function earlyCard(all){
   h+='<p style="color:var(--ink2)">This LR is not in your weight list. The previous auditor already weighed it.</p><div class="big"><button type="button" class="btn line2" data-act="wtshow">Show it anyway</button></div></div>';
   return h;
 }
+function narrowChips(list,q){
+  var n=q.length,seen={},c=[];
+  list.forEach(function(i){var b=lrBase(i.lr),k=b.length>n?b.slice(-(n+1)):b;if(seen[k])return;seen[k]=1;c.push(k)});
+  if(c.length<2)return '';
+  return '<div class="nchips">'+c.slice(0,12).map(function(k){return '<button type="button" class="nchip" data-act="narrow" data-v="'+esc(k)+'">'+esc(k)+'</button>'}).join('')+'</div>';
+}
 function renderResults(){
   var q=S.q.trim(),list,h='',W=S.tab==='wt';
   if(S.xform&&!W){$('#results').innerHTML=xformHtml();return}
@@ -1242,7 +1250,7 @@ function renderResults(){
       }else h+='<p style="color:var(--ink2)">Keep typing, or check the digits.</p>';
       h+='</div>';
     }else if(list.length>1){
-      h+='<p class="note">'+list.length+' LRs end with '+esc(q)+'. '+(W?'Weigh each one.':'Mark each one.')+'</p>';
+      h+='<p class="note">'+list.length+' LRs end with '+esc(q)+'. '+(W?'Weigh each one.':'Mark each one.')+' Or ask labour for the full number and type more digits above, or tap one below.</p>'+narrowChips(list,q);
     }
     if(hid&&list.length)h+='<p class="note">'+hid+' more LR'+(hid>1?'s':'')+' ending '+esc(q)+' already weighed earlier (hidden).</p>';
   }else{
@@ -2005,6 +2013,7 @@ document.addEventListener('click',function(e){
     case 'none':mark(id,0);break;
     case 'tmsend':tmSend(false);break;
     case 'tmshare':tmSend(true);break;
+    case 'narrow':{var nv=el.getAttribute('data-v')||'';S.q=nv;var nq=$('#q');nq.value=nv;nq.focus();refresh();break}
     case 'tmpick':{var tf=$('#tmfile');if(tf)tf.click();break}
     case 'tmmine':if(S.team){tmClear(id,el.getAttribute('data-t'));refresh()}break;
     case 'tmmineall':if(S.team){S.team.clashes=[];refresh()}break;
@@ -2226,7 +2235,7 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var APPV=37;
+  var APPV=38;
   var vb=document.getElementById('verbtn');
   function hard(){
     try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
