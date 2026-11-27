@@ -655,6 +655,46 @@ body.kb .deck{padding-block:10px 6px;gap:10px}
 .tbb{height:56px;min-width:54px;border-radius:18px;border:0;background:rgba(255,255,255,.16);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 6px;font-size:10.5px;font-weight:600}
 .tbb svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .tbb.on{background:#FFC83D;color:#3a2600}
+
+/* ----- Weighed earlier tab ----- */
+.botnav .in{grid-template-columns:repeat(3,1fr)}
+.botnav button{font-size:11.5px}
+.botnav .bdg.grey{background:var(--ink2)}
+.earlycard .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.earlycard input[type=date]{height:52px;font-size:18px;border-radius:14px;border:2px solid var(--line);padding:0 12px;background:var(--surface);color:var(--ink);width:100%}
+.stat{background:var(--surf2);border-radius:16px;padding:10px 12px;display:grid;gap:2px}
+.stat b{font-size:26px;font-weight:500}
+.stat span{font-size:12px;color:var(--ink2)}
+.lrchip.full{display:flex;width:100%;justify-content:space-between;align-items:center;gap:8px;text-align:left;margin-bottom:6px}
+.fchip.wtc{border-style:dashed}
+
+.tbb{min-width:46px;padding:0 4px;font-size:10px}
+.wscope{flex:1 1 100%;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px;display:grid;gap:8px;box-shadow:var(--e1)}
+.wscope .wst{font-weight:500;font-size:15px}
+.wscope .seg2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.wscope label{font-size:13px;font-weight:500;display:grid;gap:4px}
+.wscope input[type=date]{height:48px;border-radius:14px;border:2px solid var(--accent);padding:0 12px;font-size:16px;background:var(--bg);color:var(--ink)}
+.wsk summary{cursor:pointer;font-size:13.5px;color:var(--accent);font-weight:500;padding:4px 0}
+.wsk .lrchip{margin-top:6px}
+body[data-tab=wt] .fchip.addx{display:none}
+
+#qrow{gap:6px}
+.dashgrp{gap:4px}
+.tbb{min-width:42px;height:52px;padding:0 2px;font-size:9.5px;border-radius:14px}
+.tbb svg{width:20px;height:20px}
+#qrow .q{padding:0 40px 0 40px;font-size:22px;background-position:12px 50%;background-size:20px 20px;height:52px}
+#qrow .q::placeholder{font-size:14px}
+#qrow .qx{width:32px;height:32px;right:6px}
+
+.byl{margin:0;padding:8px 12px;border-radius:12px;background:var(--accent-bg);color:var(--ink);font-size:13.5px}
+#namebox{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(10,16,50,.72)}
+#namebox .nbx{width:100%;max-width:380px;background:var(--surface);color:var(--ink);border-radius:28px;padding:24px 20px;box-shadow:0 12px 40px rgba(0,0,0,.35);display:grid;gap:10px;animation:rise .35s var(--ease) both}
+#namebox h2{margin:0;font-size:22px;font-weight:500}
+#namebox p{margin:0;color:var(--ink2);font-size:14px}
+#namebox input{height:54px;border-radius:16px;border:2px solid var(--line);background:var(--bg);color:var(--ink);padding:0 16px;font-size:20px;outline:0}
+#namebox input:focus{border-color:var(--accent)}
+#namebox .nbe{min-height:18px;color:#C62828;font-size:13.5px;font-weight:500}
+#namebox button{height:52px;border:0;border-radius:18px;background:var(--accent);color:var(--surface);font-size:16px;font-weight:500}
 </style>
 
 <div class="wrap"><div class="col">
@@ -701,7 +741,7 @@ body.kb .deck{padding-block:10px 6px;gap:10px}
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v29 · tap to refresh app</button></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v37 · tap to refresh app</button></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -715,7 +755,7 @@ body.kb .deck{padding-block:10px 6px;gap:10px}
         <input id="q" class="q" type="text" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="12" placeholder="Last 4 digits of LR" aria-label="Last 4 digits of LR number">
         <button id="qclear" type="button" class="qx" aria-label="Clear digits" data-act="qclear" hidden>&times;</button>
       </div>
-      <div id="dashgrp" class="dashgrp"><button type="button" id="tbcheck" class="tbb on" aria-label="Check LRs"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 12l2 2 4-4"/></svg><span class="dlab">Check</span></button><button type="button" id="tbsum" class="tbb" aria-label="Open summary"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 16v-4M12 16V8M16 16v-6"/></svg><span class="dlab">Summary</span></button></div>
+      <div id="dashgrp" class="dashgrp"><button type="button" id="tbcheck" class="tbb on" aria-label="Stock check"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 12l2 2 4-4"/></svg><span class="dlab">Stock</span></button><button type="button" id="tbwt" class="tbb" aria-label="Weight taking"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9h11l2 10.5h-15z"/><path d="M9.3 9a2.7 2.7 0 015.4 0"/><path d="M12 12.5v3"/></svg><span class="dlab">Weight</span></button><button type="button" id="tbsum" class="tbb" aria-label="Open summary"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 16v-4M12 16V8M16 16v-6"/></svg><span class="dlab">Summary</span></button></div>
     </div>
   <div id="fileline" class="fileline"></div>
   <div id="pane-check">
@@ -724,15 +764,17 @@ body.kb .deck{padding-block:10px 6px;gap:10px}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 29</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 37</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
-  <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4.5h6"/><path d="M8.8 13l2.4 2.4 4-4.6"/></svg></span>Check</button>
+  <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4.5h6"/><path d="M8.8 13l2.4 2.4 4-4.6"/></svg></span>Stock</button>
+  <button type="button" data-act="tab" data-tab="wt" aria-pressed="false"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 9h11l2 10.5h-15z"/><path d="M9.3 9a2.7 2.7 0 015.4 0"/><path d="M12 12.5v3"/></svg></span>Weight</button>
   <button type="button" data-act="tab" data-tab="sum" aria-pressed="false"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 15v-3M12 15V8M16 15v-5"/></svg></span>Summary<span id="sumbdg" class="bdg" hidden></span></button>
 </div></nav>
 <div id="splash"><div class="logo">SV</div><div class="sp-t">Stock Verify</div><div class="sp-s">Audit · Stock · Weight</div></div>
 <input type="file" id="tmfile" hidden>
+<input type="file" id="indtfile" hidden>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -746,7 +788,7 @@ var norm=function(s){return String(s==null?'':s).toUpperCase().replace(/[^A-Z0-9
 
 /* ---------- storage (optional convenience) ---------- */
 function save(){
-  try{localStorage.setItem(KEY,JSON.stringify({fileName:S.fileName,sample:S.sample,items:S.items,excess:S.excess,dups:S.dups,kgf:S.kgf,rate:S.rate,rateU:S.rateU,bid:S.bid,bname:S.bname,idate:S.idate,ia:S.ia,hobr:S.hobr,tab:S.tab,filter:S.filter,q:S.q,savedAt:Date.now()}));S.saveOk=true;S.savedAt=new Date()}
+  try{localStorage.setItem(KEY,JSON.stringify({fileName:S.fileName,sample:S.sample,items:S.items,excess:S.excess,dups:S.dups,kgf:S.kgf,rate:S.rate,rateU:S.rateU,bid:S.bid,bname:S.bname,idate:S.idate,ia:S.ia,hobr:S.hobr,wtUpto:S.wtUpto,wtHide:S.wtHide,tab:S.tab,filter:S.filter,q:S.q,savedAt:Date.now()}));S.saveOk=true;S.savedAt=new Date()}
   catch(e){S.saveOk=false}
   brSync();
   showSaved();
@@ -770,7 +812,7 @@ function carryOver(name,items){
     return {excess:d.excess||[]};
   }catch(e){return null}
 }
-function load(){try{var r=localStorage.getItem(KEY);if(!r)return false;var d=JSON.parse(r);if(!d||!Array.isArray(d.items)||!d.items.length)return false;S.fileName=d.fileName||'Stock sheet';S.sample=!!d.sample;S.items=d.items;S.excess=d.excess||[];S.dups=d.dups||0;S.kgf=d.kgf||8;S.rate=d.rate||'';S.rateU=d.rateU||'tonne';S.bid=d.bid||null;S.bname=d.bname||'';S.idate=d.idate||'';S.ia=d.ia||'Sangmesh Hiremath';S.hobr=d.hobr||'';S.savedAt=d.savedAt?new Date(d.savedAt):null;S.saveOk=true;S.tab=d.tab==='sum'?'sum':'check';S.filter=d.filter||'all';S.q=d.q||'';S.numeric=S.items.every(function(i){return /^\d+$/.test(lrBase(i.lr))});return true}catch(e){return false}}
+function load(){try{var r=localStorage.getItem(KEY);if(!r)return false;var d=JSON.parse(r);if(!d||!Array.isArray(d.items)||!d.items.length)return false;S.fileName=d.fileName||'Stock sheet';S.sample=!!d.sample;S.items=d.items;S.excess=d.excess||[];S.dups=d.dups||0;S.kgf=d.kgf||8;S.rate=d.rate||'';S.rateU=d.rateU||'tonne';S.bid=d.bid||null;S.bname=d.bname||'';S.idate=d.idate||'';S.ia=d.ia||'Sangmesh Hiremath';S.hobr=d.hobr||'';S.savedAt=d.savedAt?new Date(d.savedAt):null;S.saveOk=true;S.wtUpto=d.wtUpto||'';S.wtHide=d.wtHide===true&&!!S.wtUpto;S.tab=d.tab==='sum'?'sum':(d.tab==='wt'||d.tab==='early')?'wt':'check';S.filter=d.filter||'all';S.q=d.q||'';S.numeric=S.items.every(function(i){return /^\d+$/.test(lrBase(i.lr))});return true}catch(e){return false}}
 function wipe(){backupPrev();try{localStorage.removeItem(KEY)}catch(e){}}
 
 /* ---------- status helpers ---------- */
@@ -790,7 +832,8 @@ var LABELS={
   desc:['DESCRIPTION','DESC','GOODS','ITEM','NATUREOFGOODS'],
   stn:['BKGSTN','BOOKINGSTATION','BKGSTATION','BOOKINGSTN','FROM','FROMSTN','FROMSTATION','ORIGIN'],
   wt:['AWTCWT','AWT'],
-  days:['DAYS']
+  days:['DAYS'],
+  intd:['INTSDT','INTSDATE','INTSDT1','INSTDT']
 };
 function cs(v){if(v==null)return '';if(typeof v==='number')return String(v);return String(v).trim()}
 function headerMap(row){
@@ -803,6 +846,23 @@ function headerMap(row){
   });
   return (m.lr!=null&&m.noa!=null)?m:null;
 }
+function dtOf(v){
+  var y,m,d,t;
+  if(typeof v==='number'&&v>20000&&v<80000){t=new Date(Date.UTC(1899,11,30)+Math.floor(v)*864e5);return t.toISOString().slice(0,10)}
+  var s=cs(v);if(!s)return '';
+  var x=/^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(s);
+  if(x){y=+x[1];m=+x[2];d=+x[3]}
+  else{
+    x=/(\d{1,2})[\/\-.\s]+([A-Za-z]{3,9}|\d{1,2})[\/\-.\s,]+(\d{2,4})/.exec(s);if(!x)return '';
+    d=+x[1];y=+x[3];if(y<100)y+=2000;
+    if(/^\d+$/.test(x[2]))m=+x[2];else{m=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'].indexOf(x[2].slice(0,3).toUpperCase())+1}
+  }
+  if(!(m>=1&&m<=12&&d>=1&&d<=31&&y>=2000&&y<=2100))return '';
+  return y+'-'+('0'+m).slice(-2)+'-'+('0'+d).slice(-2);
+}
+function dmy(s){if(!s)return '';var p=s.split('-');return p[2]+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+p[0]}
+function earlier(i){return !!(S.wtUpto&&i.indt&&i.indt<=S.wtUpto)}
+function vis(l){return (S.wtHide&&S.wtUpto)?l.filter(function(i){return !earlier(i)}):l}
 function lrOf(v){
   var s=typeof v==='number'?String(Math.round(v)):cs(v).replace(/\s+/g,'');
   var mm=/^(\d{4,})[-\/]?([A-Za-z]{1,3})$/.exec(s);if(mm)s=mm[1]+'-'+mm[2].toUpperCase();
@@ -828,7 +888,7 @@ function extract(rows,fixed){
     seen[lr]={};
     var sl=parseInt(cs(g('sl')),10);
     var days=cs(g('days'));
-    var nit={id:items.length,sl:isFinite(sl)?sl:items.length+1,lr:lr,noa:noa,desc:cs(g('desc')),stn:cs(g('stn')),wt:cs(g('wt')),days:days,found:null};
+    var nit={id:items.length,sl:isFinite(sl)?sl:items.length+1,lr:lr,noa:noa,desc:cs(g('desc')),stn:cs(g('stn')),wt:cs(g('wt')),days:days,indt:dtOf(g('intd')),found:null};
     items.push(nit);seen[lr].it=nit;
   });
   return {items:items,dups:dups};
@@ -888,7 +948,7 @@ function showMapper(rows,name){
 function start(name,items,dups,sample){
   backupPrev();
   var kept=carryOver(name,items);
-  S.bid=null;S.bname='';S.idate='';S.hobr='';S.fileName=name;S.items=items;S.dups=dups;S.sample=sample;S.excess=kept?kept.excess:[];S.q='';S.filter='all';S.tab='check';S.open=null;S.last=null;
+  S.bid=null;S.bname='';S.idate='';S.hobr='';S.wtUpto='';S.wtHide=false;S.wf='todo';S.fileName=name;S.items=items;S.dups=dups;S.sample=sample;S.excess=kept?kept.excess:[];S.q='';S.filter='all';S.tab='check';S.open=null;S.last=null;
   S.numeric=items.every(function(i){return /^\d+$/.test(lrBase(i.lr))});
   save();setup();show('work');refresh();
   var q=$('#q');q.value='';
@@ -923,8 +983,47 @@ function toast(msg,undo){
 }
 
 /* ---------- marking ---------- */
+
+/* ---------- who checked what ---------- */
+function whoNow(){return TMN||'Auditor'}
+function byAgg(i){var m={},o=[];(i.by||[]).forEach(function(b){var k=b.n||'Auditor';if(!m[k]){m[k]={n:k,q:0,cr:false};o.push(m[k])}if(b.cr)m[k].cr=true;else if(b.q>0)m[k].q+=b.q});return o}
+function byText(i){return byAgg(i).map(function(x){return x.cr?x.n+' (CR stock)':x.q>0?x.n+' '+x.q+(x.q===1?' article':' articles'):x.n+' (not found)'}).join(' · ')}
+function wByText(i){return (physOf(i)>0&&i.pw&&i.pw.by)?String(i.pw.by):''}
+function audStats(){
+  var m={},o=[];function g(n){if(!m[n]){m[n]={n:n,lrs:0,arts:0,nf:0,cr:0,wt:0,kg:0};o.push(m[n])}return m[n]}
+  S.items.forEach(function(i){
+    byAgg(i).forEach(function(x){var r=g(x.n);r.lrs++;r.arts+=x.q;if(x.cr)r.cr++;else if(!x.q)r.nf++});
+    var wb=wByText(i);if(wb){var nm=wb.split(' + ');nm.forEach(function(n){var r=g(n);r.wt++;r.kg+=physOf(i)/nm.length})}
+  });
+  return o;
+}
+function audAoa(){
+  var a2=[['Auditor','LRs checked (stock)','Articles found','Not found LRs','CR stock LRs','LRs weighed','Weight taken (kg)']];
+  audStats().forEach(function(r){a2.push([r.n,r.lrs,r.arts,r.nf,r.cr,r.wt,rd2(r.kg)])});
+  return a2;
+}
+function auditorSection(){
+  var l=audStats();if(!l.length)return '';
+  return '<section class="grp st-info"><header><h3>Who checked what</h3><span>Stock and weights by each auditor</span></header><div class="tw"><table><thead><tr><th>Auditor</th><th class="n">LRs checked</th><th class="n">Articles found</th><th class="n">Not found LRs</th><th class="n">CR stock</th><th class="n">LRs weighed</th></tr></thead><tbody>'+
+    l.map(function(r){return '<tr><td><b>'+esc(r.n)+'</b></td><td class="n">'+r.lrs+'</td><td class="n">'+r.arts+'</td><td class="n">'+r.nf+'</td><td class="n">'+r.cr+'</td><td class="n">'+r.wt+'</td></tr>'}).join('')+'</tbody></table></div></section>';
+}
+function askName(){
+  if(document.getElementById('namebox'))return;
+  var d=document.createElement('div');d.id='namebox';
+  d.innerHTML='<form class="nbx"><h2>Your name</h2><p>Type your name once. It is saved on this phone and shown next to the LRs and weights you check, so the team can see who did what.</p><input id="nbin" type="text" maxlength="40" autocomplete="off" placeholder="e.g. Ravi"><div class="nbe" id="nbe"></div><button type="submit">Save name</button></form>';
+  document.body.appendChild(d);
+  var f=d.querySelector('form'),inp=d.querySelector('#nbin');
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var v=inp.value.replace(/\s+/g,' ').trim();
+    if(v.length<2){d.querySelector('#nbe').textContent='Please type your name';return}
+    TMN=v;try{localStorage.setItem(TMK,TMN)}catch(x){}
+    d.remove();var ti=$('#tmname');if(ti)ti.value=TMN;toast('Hello '+TMN);
+  });
+  setTimeout(function(){try{inp.focus()}catch(e){}},300);
+}
 function markCr(id){var it=S.items[id];if(!it)return;try{if(navigator.vibrate)navigator.vibrate(18)}catch(e){}
-  S.last={id:id,prev:it.found,prevH:it.hist,prevCr:!!it.cr};it.cr=true;it.found=0;it.hist=null;save();toast('LR …'+String(it.lr).slice(-4)+' · CR stock (delivered)',true);
+  S.last={id:id,prev:it.found,prevH:it.hist,prevCr:!!it.cr,prevBy:it.by};it.cr=true;it.found=0;it.hist=null;it.by=[{n:whoNow(),q:0,cr:1,at:Date.now()}];save();toast('LR …'+String(it.lr).slice(-4)+' · CR stock (delivered)',true);
   if(S.q){if(matches(S.q).length===1){S.q='';var q=$('#q');q.value='';q.focus()}}else S.open=null;refresh()}
 function stLab(i,s){s=s||st(i);return s==='idle'?'Not checked':s==='ok'?'All '+i.noa+' found':s==='bad'?'Not found':s==='cr'?'CR stock':i.found+' of '+i.noa+' found'}
 function markLabel(it,n){return n==null?'mark cleared':n>=it.noa?'all '+it.noa+' found':n<=0?'not found':n+' of '+it.noa+' found'}
@@ -936,8 +1035,10 @@ function moreBlock(i){
 function mark(id,n,add){
   var it=S.items[id];if(!it)return;
   try{if(navigator.vibrate)navigator.vibrate(18)}catch(e){}
-  S.last={id:id,prev:it.found,prevH:it.hist,prevCr:!!it.cr};
-  it.cr=false;it.found=n;it.hist=add||((n>0&&n<it.noa)?[n]:null);save();
+  S.last={id:id,prev:it.found,prevH:it.hist,prevCr:!!it.cr,prevBy:it.by};
+  it.cr=false;it.found=n;it.hist=add||((n>0&&n<it.noa)?[n]:null);
+  if(n==null)it.by=null;else if(add)it.by=(it.by||[]).concat({n:whoNow(),q:n-(S.last.prev||0),at:Date.now()});else it.by=[{n:whoNow(),q:n,at:Date.now()}];
+  save();
   toast('LR …'+it.lr.slice(-4)+' · '+markLabel(it,n),true);
   if(S.q){
     if(matches(S.q).length===1){S.q='';var q=$('#q');q.value='';q.focus()}
@@ -957,14 +1058,41 @@ function refresh(){
   var tabs=document.querySelectorAll('.botnav button');
   Array.prototype.forEach.call(tabs,function(b){var on=b.getAttribute('data-tab')===S.tab;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
   $('#q').placeholder=S.tab==='sum'?'Search last 4 digits of LR':'Last 4 digits of LR';
-  $('#pane-check').hidden=S.tab!=='check';
+  $('#pane-check').hidden=S.tab==='sum';
   $('#pane-sum').hidden=S.tab!=='sum';
+  document.body.setAttribute('data-tab',S.tab);
   $('#qclear').hidden=!S.q;
-  if(S.tab==='check'){renderFilters(c);renderResults()}else renderSummary();
+  if(S.tab==='sum')renderSummary();else{renderFilters(c);renderResults()}
+  if(!TMN&&!$('#work').hidden)askName();
+}
+function wDone(i){return physOf(i)>0&&!cftMissing(i)}
+function wtScopeCard(){
+  var skip=!!S.wtHide,n=S.items.filter(earlier).length,withD=S.items.filter(function(i){return i.indt}).length;
+  var h='<div class="wscope"><div class="wst">Which LRs will you weigh?</div><div class="seg2">'+
+    '<button type="button" class="sg'+(skip?'':' on')+'" data-act="wtscope" data-v="all">All LRs<small>Weigh every LR</small></button>'+
+    '<button type="button" class="sg'+(skip?' on':'')+'" data-act="wtscope" data-v="skip">Skip weighed earlier<small>'+(S.wtUpto?n+' LRs skipped':'Previous auditor took weights')+'</small></button></div>';
+  if(skip){
+    h+='<label>Previous auditor took weights up to (last date)<input id="wtdate" type="date" value="'+esc(S.wtUpto||'')+'"></label>';
+    h+='<p class="hint2">LRs that came to the godown (INTSDT) on or before this date are treated as already weighed and hidden from this list. If the labour tells the last 4 digits of an LR that is not here, it was weighed already.</p>';
+    if(!withD)h+='<p class="note">No INTSDT dates are loaded for this sheet. <button type="button" class="link" data-act="wtfile">Add dates from the stock sheet</button></p>';
+    else if(withD<S.items.length)h+='<p class="note">'+(S.items.length-withD)+' LRs have no INTSDT date, so they stay in this list. <button type="button" class="link" data-act="wtfile">Load dates again</button></p>';
+    if(S.wtUpto&&n){
+      var noa=0;S.items.filter(earlier).forEach(function(i){noa+=i.noa});
+      h+='<details class="wsk"><summary>Weighed earlier · '+n+' LRs · '+noa+' articles</summary>'+
+        S.items.filter(earlier).map(function(i){return '<div class="lrchip full"><span class="lrh">'+lrHtml(i.lr)+'</span><small>NOA '+i.noa+(wtLabel(i)?' · '+esc(wtLabel(i)):'')+' · came '+esc(dmy(i.indt))+'</small></div>'}).join('')+'</details>';
+    }
+  }
+  return h+'</div>';
 }
 function renderFilters(c){
-  var f=[['all','All',c.total],['idle','Not checked',c.idle],['ok','All found',c.ok],['warn','Short',c.warn],['bad','Not found',c.bad],['cr','CR stock',c.cr]];
   var el=$('#filters');el.hidden=!!S.q||!!S.xform;
+  if(S.tab==='wt'){
+    var pool=vis(S.items),dn=pool.filter(wDone).length,td=pool.length-dn,wf=S.wf||'todo';
+    var f=[['todo','To weigh',td],['done','Weighed',dn],['all','All',pool.length]];
+    el.innerHTML=wtScopeCard()+f.map(function(x){return '<button type="button" class="fchip st-'+(x[0]==='done'?'ok':x[0]==='todo'?'idle':'all')+(wf===x[0]?' on':'')+'" data-act="wfilter" data-f="'+x[0]+'">'+x[1]+' <b>'+x[2]+'</b></button>'}).join('');
+    return;
+  }
+  var f=[['all','All',c.total],['idle','Not checked',c.idle],['ok','All found',c.ok],['warn','Short',c.warn],['bad','Not found',c.bad],['cr','CR stock',c.cr]];
   el.innerHTML=f.map(function(x){return '<button type="button" class="fchip st-'+x[0]+(S.filter===x[0]?' on':'')+'" data-act="filter" data-f="'+x[0]+'">'+x[1]+' <b>'+x[2]+'</b></button>'}).join('')+'<button type="button" class="fchip addx" data-act="xopen" data-k="excess">+ Excess / CR raised / HO line</button>';
 }
 function wtLabel(i){
@@ -974,16 +1102,18 @@ function wtLabel(i){
   if(!p.length&&i.wt)p.push(i.wt+' kg');
   return p.join(' · ');
 }
+function wst(i){return physOf(i)>0?(cftMissing(i)?'warn':wlossOf(i)>0?'bad':'ok'):'idle'}
+function wpill(i){return physOf(i)>0?(cftMissing(i)?'CFT needed':'Weighed '+kgS(physOf(i))+' kg'):'Not weighed'}
 function rowHtml(i,open){
-  var s=st(i);
-  var pill=stLab(i,s);
-  var meta=[i.desc,i.stn,wtLabel(i),i.days!==''?i.days+(String(i.days)==='1'?' day':' days'):''].filter(Boolean).join(' · ');
-  return '<article class="row st-'+s+(wlossOf(i)?' wloss':'')+'" data-id="'+i.id+'">'+
+  var W=S.tab==='wt',s=W?wst(i):st(i);
+  var pill=W?wpill(i):stLab(i,st(i));
+  var meta=[i.desc,i.stn,wtLabel(i),i.days!==''?i.days+(String(i.days)==='1'?' day':' days'):'',W&&earlier(i)?'Weighed earlier':''].filter(Boolean).join(' · ');
+  return '<article class="row st-'+s+(W&&wlossOf(i)?' wloss':'')+'" data-id="'+i.id+'">'+
     '<button type="button" class="head" data-act="toggle" data-id="'+i.id+'" aria-expanded="'+(open?'true':'false')+'">'+
     '<span class="sl">'+esc(i.sl)+'</span><span class="lr">'+lrHtml(i.lr)+'</span>'+
     '<span class="noa"><small>NOA</small><b>'+i.noa+'</b></span>'+
     '<span class="meta">'+(i.remark?'<span class="rbadge">REMARK</span>':'')+esc(meta)+'</span><span class="pill">'+esc(pill)+'</span></button>'+
-    (open?ctlHtml(i,s):extraHtml(i))+'</article>';
+    (open?ctlHtml(i,st(i)):extraHtml(i))+'</article>';
 }
 function bringRow(){
   var rw=document.querySelector('#results .row');if(!rw)return;
@@ -992,26 +1122,53 @@ function bringRow(){
   rw.scrollIntoView({block:'start',behavior:'auto'});
 }
 document.addEventListener('toggle',function(e){var d=e.target;if(d&&d.classList&&d.classList.contains('cftd')){S.cftOpen=S.cftOpen||{};S.cftOpen[d.getAttribute('data-cid')]=d.open}},true);
-function ctlHtml(i,s){
-  var h='<div class="ctl"><div class="big">'+
-    '<button type="button" class="btn ok'+(s==='ok'?' on':'')+'" data-act="all" data-id="'+i.id+'">All found<small>'+i.noa+' of '+i.noa+'</small></button>'+
-    '<button type="button" class="btn bad'+(s==='bad'?' on':'')+'" data-act="none" data-id="'+i.id+'">Not found<small>0 of '+i.noa+'</small></button></div>'+
-    pwBlock(i)+
-    '<button type="button" class="btn crb'+(s==='cr'?' on':'')+'" data-act="crstock" data-id="'+i.id+'">CR stock<small>Was here at start, delivered to customer during audit</small></button>';
-  if(i.noa>1){
-    h+=moreBlock(i);
-    h+='<div class="part"><span class="lbl">'+(i.found!=null&&i.found<i.noa?'Wrong total? Type the correct total found, then Set.':'Some found. Type how many you have, then Set.')+'</span>';
-    if(false){
-      h+='<div class="chips">';
-      for(var n=1;n<i.noa;n++)h+='<button type="button" class="chip'+(i.found===n?' on':'')+'" data-act="part" data-id="'+i.id+'" data-n="'+n+'" aria-label="'+n+' of '+i.noa+' found">'+n+'</button>';
-      h+='</div>';
-    }else{
-      h+='<div class="numrow"><input id="pn-'+i.id+'" class="num" type="number" inputmode="numeric" min="1" max="'+(i.noa-1)+'" placeholder="e.g. '+Math.ceil(i.noa/2)+' (1 to '+(i.noa-1)+')" enterkeyhint="done"><button type="button" class="btn warn" data-act="partnum" data-id="'+i.id+'">Set</button></div>';
-    }
-    h+='</div>';
-  }
-  h+=cftBlock(i);
+document.addEventListener('change',function(e){var t=e.target;if(t&&t.id==='wtdate'){S.wtUpto=t.value||'';if(S.wtUpto)S.wtHide=true;save();refresh();toast(S.wtUpto?S.items.filter(earlier).length+' LRs marked as weighed earlier':'Date cleared')}});
+$('#indtfile').addEventListener('change',function(){
+  var f=this.files&&this.files[0];this.value='';if(!f)return;
+  if(typeof XLSX==='undefined'){toast('The Excel reader did not load');return}
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var wb=XLSX.read(new Uint8Array(rd.result),{type:'array'}),map={},cnt=0,seenCol=false;
+      wb.SheetNames.forEach(function(nm){
+        var m=null;
+        sheetRows(wb,nm).forEach(function(row){
+          if(!Array.isArray(row))return;
+          var hm=headerMap(row);if(hm){m=hm;return}
+          if(!m||m.intd==null)return;seenCol=true;
+          var lr=lrOf(row[m.lr]),d=dtOf(row[m.intd]);if(lr&&d)map[lr]=d;
+        });
+      });
+      S.items.forEach(function(i){if(map[i.lr]){i.indt=map[i.lr];cnt++}});
+      save();refresh();
+      toast(!seenCol?'No INTSDT column found in this file':cnt+' LRs now have dates');
+    }catch(x){toast('Could not read this file')}
+  };
+  rd.readAsArrayBuffer(f);
+});
+function remarkHtml(i){
+  var h='';
   h+='<div class="remark"><label for="rm-'+i.id+'">Remark for this LR</label><input id="rm-'+i.id+'" class="rem'+(i.remark?' filled':'')+'" data-id="'+i.id+'" type="text" maxlength="200" autocomplete="off" placeholder="e.g. 1 article damaged, found in wrong bay" value="'+esc(i.remark||'')+'"><div class="tags">'+['Damaged','Wet','Leaking','Torn packing'].map(function(t){return '<button type="button" class="tag" data-act="tag" data-id="'+i.id+'" data-t="'+t+'">'+t+'</button>'}).join('')+'</div></div>';
+  return h;
+}
+function ctlHtml(i,s){
+  var W=S.tab==='wt',h='<div class="ctl">';
+  if(W){
+    if(wByText(i))h+='<p class="byl"><b>Weighed by:</b> '+esc(wByText(i))+'</p>';
+    if(earlier(i))h+='<p class="note">Weight already taken earlier by the previous auditor (came to godown '+esc(dmy(i.indt))+').</p>';
+    return h+pwBlock(i)+cftBlock(i)+remarkHtml(i)+'</div>';
+  }
+  if(i.by&&i.by.length)h+='<p class="byl"><b>Checked by:</b> '+esc(byText(i))+'</p>';
+  h+='<div class="big">'+
+    '<button type="button" class="btn ok'+(s==='ok'?' on':'')+'" data-act="all" data-id="'+i.id+'">All found<small>'+i.noa+' of '+i.noa+'</small></button>'+
+    '<button type="button" class="btn bad'+(s==='bad'?' on':'')+'" data-act="none" data-id="'+i.id+'">Not found<small>0 of '+i.noa+'</small></button></div>';
+  if(i.noa>1){
+    h+='<div class="part"><span class="lbl">'+(i.found!=null&&i.found<i.noa?'Wrong total? Type the correct total found, then Set.':'Only some articles found? Type how many (for example 1 out of '+i.noa+'), then tap Set.')+'</span>'+
+      '<div class="numrow"><input id="pn-'+i.id+'" class="num" type="number" inputmode="numeric" min="1" max="'+(i.noa-1)+'" placeholder="Found, 1 to '+(i.noa-1)+' (out of '+i.noa+')" enterkeyhint="done"><button type="button" class="btn warn" data-act="partnum" data-id="'+i.id+'">Set</button></div></div>';
+    h+=moreBlock(i);
+  }
+  h+='<button type="button" class="btn crb'+(s==='cr'?' on':'')+'" data-act="crstock" data-id="'+i.id+'">CR stock<small>Was here at start, delivered to customer during audit</small></button>';
+  h+=remarkHtml(i);
   if(i.found!=null)h+='<button type="button" class="link" data-act="clear" data-id="'+i.id+'">Clear mark</button>';
   return h+'</div>';
 }
@@ -1066,28 +1223,34 @@ function exSectionsOld(){
   });
   return h;
 }
+function earlyCard(all){
+  var h='<div class="xform earlycard"><p><b>Weight already taken earlier</b></p>';
+  all.filter(earlier).forEach(function(i){h+='<div class="lrchip"><span class="lrh">'+lrHtml(i.lr)+'</span><small>NOA '+i.noa+' · came to godown '+esc(dmy(i.indt))+'</small></div>'});
+  h+='<p style="color:var(--ink2)">This LR is not in your weight list. The previous auditor already weighed it.</p><div class="big"><button type="button" class="btn line2" data-act="wtshow">Show it anyway</button></div></div>';
+  return h;
+}
 function renderResults(){
-  var q=S.q.trim(),list,h='';
-  if(S.xform){$('#results').innerHTML=xformHtml();return}
+  var q=S.q.trim(),list,h='',W=S.tab==='wt';
+  if(S.xform&&!W){$('#results').innerHTML=xformHtml();return}
   if(q){
-    list=matches(q);
-    if(!list.length){
+    var all=matches(q);list=W?vis(all):all;var hid=all.length-list.length;
+    if(!list.length&&hid){h+=earlyCard(all)}else if(!list.length){
       h+='<div class="xform"><p><b>No LR on the sheet ends with '+esc(q)+'.</b></p>';
-      if(q.length>=4){
+      if(W)h+='<p style="color:var(--ink2)">Check the digits. If it is in the godown but not on the stock sheet, add it in the Stock tab.</p>';
+      else if(q.length>=4){
         h+='<p>In the godown but not on the stock sheet?</p><div class="big"><button type="button" class="btn info" data-act="xopen" data-k="excess">Excess<small>Has an LR number or name</small></button><button type="button" class="btn info" data-act="xopen" data-k="cr">CR raised<small>Already billed, not on the sheet</small></button><button type="button" class="btn line2" data-act="xopen" data-k="ho">HO line stock<small>No number, no name</small></button></div>';
       }else h+='<p style="color:var(--ink2)">Keep typing, or check the digits.</p>';
       h+='</div>';
     }else if(list.length>1){
-      h+='<p class="note">'+list.length+' LRs end with '+esc(q)+'. Mark each one.</p>';
-    }else{
-      h+='';
+      h+='<p class="note">'+list.length+' LRs end with '+esc(q)+'. '+(W?'Weigh each one.':'Mark each one.')+'</p>';
     }
+    if(hid&&list.length)h+='<p class="note">'+hid+' more LR'+(hid>1?'s':'')+' ending '+esc(q)+' already weighed earlier (hidden).</p>';
   }else{
-    list=S.items.filter(function(i){return S.filter==='all'||st(i)===S.filter});
-    if(!list.length)h+='<p class="empty">Nothing in this list.</p>';
+    if(W){var wf=S.wf||'todo';list=vis(S.items).filter(function(i){return wf==='all'||(wf==='done'?wDone(i):!wDone(i))});if(!list.length)h+='<p class="empty">'+(wf==='todo'?'Nothing left to weigh in this list.':'Nothing in this list.')+'</p>'}
+    else{list=S.items.filter(function(i){return S.filter==='all'||st(i)===S.filter});if(!list.length)h+='<p class="empty">Nothing in this list.</p>'}
   }
   h+=list.map(function(i){return rowHtml(i,!!q||S.open===i.id)}).join('');
-  if(q&&list.length)h+='<button type="button" class="link" data-act="xopen" data-k="excess">LR not on the sheet? Add excess or CR raised</button>';
+  if(q&&list.length&&!W)h+='<button type="button" class="link" data-act="xopen" data-k="excess">LR not on the sheet? Add excess or CR raised</button>';
   $('#results').innerHTML=h;
 }
 function table(items,mode){
@@ -1134,7 +1297,7 @@ function pwResult(i){
   var lf=liftedOf(i);
   return 'Physical <b>'+p.toFixed(2)+'</b> kg · Lifted on scale <b>'+lf.toFixed(2)+'</b> kg · '+(c>0?'Charged <b>'+c.toFixed(2)+'</b> kg ':'Charged weight not set ')+wbadge(i)+artsLine(i);
 }
-function pwStat(i){var p=physOf(i);if(p<=0)return '';var t=(i.pw&&i.pw.at)?new Date(i.pw.at):null;return 'Recorded '+p.toFixed(2)+' kg'+(t?' at '+t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'')}
+function pwStat(i){var p=physOf(i);if(p<=0)return '';if(cftMissing(i))return 'Weight '+p.toFixed(2)+' kg typed. Not complete yet: enter the CFT below, then tap Save weight.';var t=(i.pw&&i.pw.at)?new Date(i.pw.at):null;return 'Recorded '+p.toFixed(2)+' kg'+(t?' at '+t.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'}):'')}
 function pwBlock(i){
   if(!i.pw)i.pw={rows:[{w:'',q:String(i.noa),m:'total'}]};
   var h='<div class="pw"><div class="cft-h"><b>Weight</b></div>';
@@ -1157,7 +1320,7 @@ function cftDims(i){
   var d=i.cft.rows.filter(function(r){return parseFloat(r.l)>0&&parseFloat(r.w)>0&&parseFloat(r.h)>0}).map(function(r){return r.l+'×'+r.w+'×'+r.h});
   return d.length?d.join('; ')+' '+i.cft.u:'';
 }
-function cftMissing(i){return isW(i)&&!cftDims(i)}
+function cftMissing(i){return isW(i)&&!cftDims(i)&&!earlier(i)}
 function cftMissingSection(){
   var w=S.items.filter(function(i){return cftMissing(i)&&physOf(i)>0});if(!w.length)return '';
   var rows=w.map(function(i){var s=st(i);return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td>'+esc(i.stn)+'</td><td class="n">'+i.noa+'</td><td><span class="spill st-'+s+'">'+(s==='cr'?'CR stock':s==='ok'?'All found':s==='bad'?'Not found':s==='warn'?i.found+' of '+i.noa:'Not checked')+'</span></td></tr>'}).join('');
@@ -1327,9 +1490,9 @@ function tmSend(share){
   if(!S.items.length){toast('Load a stock sheet first');return}
   var list=[];
   S.items.forEach(function(i){
-    var rows=tmRows(i.pw),o={k:tmKey(i),noa:i.noa,found:i.found==null?null:i.found,hist:i.hist||null,cr:!!i.cr,remark:i.remark||''};
+    var rows=tmRows(i.pw),o={k:tmKey(i),noa:i.noa,found:i.found==null?null:i.found,hist:i.hist||null,cr:!!i.cr,remark:i.remark||'',by:i.by||null};
     var has=i.found!=null||i.cr||(i.remark&&String(i.remark).trim());
-    if(rows.length){o.pw={rows:rows};has=true}
+    if(rows.length){o.pw={rows:rows,by:(i.pw&&i.pw.by)||''};has=true}
     if(cftDims(i)){o.cft=i.cft;has=true}
     if(i.cwm!=null&&i.cwm!==''){o.cwm=i.cwm;has=true}
     if(has)list.push(o);
@@ -1361,19 +1524,19 @@ function tmMerge(d){
   backupPrev();
   d.items.forEach(function(t){
     var i=map[t.k];if(!i)return;
-    var th={found:t.found==null?null:t.found,cr:!!t.cr,hist:t.hist||null};
+    var th={found:t.found==null?null:t.found,cr:!!t.cr,hist:t.hist||null,by:t.by||null};
     var rm=String(t.remark||'').trim();
     if(rm){var cur=String(i.remark||'').trim();if(!cur)i.remark=rm;else if(cur.toLowerCase().indexOf(rm.toLowerCase())<0)i.remark=cur+' / '+rm}
     var ts=tmSig(th),ms=tmSig(i);
     if(ts!=='idle'){
-      if(ms==='idle'){i.found=th.found;i.hist=th.hist;i.cr=th.cr;added++}
+      if(ms==='idle'){i.found=th.found;i.hist=th.hist;i.cr=th.cr;i.by=th.by;added++}
       else if(ms===ts)same++;
       else if(!i.cr&&!th.cr){
         var m=i.found,tf=th.found;
         if(tf<=0)same++;
-        else if(m<=0){i.found=th.found;i.hist=th.hist;added++}
+        else if(m<=0){i.found=th.found;i.hist=th.hist;i.by=th.by;added++}
         else if(m>=i.noa)same++;
-        else if(tf>=i.noa){i.found=th.found;i.hist=th.hist;added++}
+        else if(tf>=i.noa){i.found=th.found;i.hist=th.hist;i.by=th.by;added++}
         else clashes.push({id:i.id,type:'stock',th:th,sum:true});
       }
       else clashes.push({id:i.id,type:'stock',th:th});
@@ -1383,8 +1546,8 @@ function tmMerge(d){
     var trows=tmRows(t.pw);
     if(trows.length){
       var mrows=tmRows(i.pw);
-      if(!mrows.length){i.pw={rows:trows};wAdd++}
-      else if(JSON.stringify(mrows)!==JSON.stringify(trows))clashes.push({id:i.id,type:'weight',th:{pw:{rows:trows}}});
+      if(!mrows.length){i.pw={rows:trows,by:(t.pw&&t.pw.by)||''};wAdd++}
+      else if(JSON.stringify(mrows)!==JSON.stringify(trows))clashes.push({id:i.id,type:'weight',th:{pw:{rows:trows,by:(t.pw&&t.pw.by)||''}}});
     }
   });
   var exAdd=0;
@@ -1452,17 +1615,18 @@ function fullExport(ts){
     ['Physical minus charged',rd2(pp-pc),''],['LRs in loss',ws.loss,''],['Loss, kg over charged',rd2(ws.kg),''],[],
     ['OTHER','Count',''],['LRs with a remark',remCount(),''],['W LRs weighed without CFT',cftMiss,''],
     ['Excess entries',exList('excess').length,exQty('excess')+' articles'],['CR raised entries',exList('cr').length,exQty('cr')+' articles'],['HO line stock entries',exList('ho').length,exQty('ho')+' articles']];
-  var all=[['Sl','LR No','From (Booking Stn)','NOA','Found','Status','Articles short','Actual Weight (kg)','Charged Weight (kg)','Physical Weight (kg)','Lifted on Scale (kg)','CFT (L x W x H)','Days','Description','Remark']];
+  var all=[['Sl','LR No','From (Booking Stn)','NOA','Found','Status','Articles short','Actual Weight (kg)','Charged Weight (kg)','Physical Weight (kg)','Lifted on Scale (kg)','CFT (L x W x H)','Days','Description','Remark','Checked by','Weighed by']];
   S.items.forEach(function(i){
     var s=st(i),lab=s==='idle'?'Not checked':s==='ok'?'All found':s==='bad'?'Not found':s==='cr'?'CR stock':'Short',a=awtOf(i),ch=cwtOf(i),p=physOf(i);
-    all.push([i.sl,String(i.lr),i.stn||'',i.noa,i.found==null?'':i.found,lab,i.found==null?'':Math.max(0,i.noa-i.found),a>0?rd2(a):'',ch>0?rd2(ch):'',p>0?rd2(p):'',p>0?rd2(liftedOf(i)):'',cftDims(i),i.days||'',i.desc||'',i.remark||'']);
+    all.push([i.sl,String(i.lr),i.stn||'',i.noa,i.found==null?'':i.found,lab,i.found==null?'':Math.max(0,i.noa-i.found),a>0?rd2(a):'',ch>0?rd2(ch):'',p>0?rd2(p):'',p>0?rd2(liftedOf(i)):'',cftDims(i),i.days||'',i.desc||'',i.remark||'',byText(i),wByText(i)]);
   });
   var tsv=fb;
   if(!DL||typeof XLSX==='undefined'){copyTsv(tsv);return}
   var wb=XLSX.utils.book_new();
   function sheet(aoa,cols,name){var x=XLSX.utils.aoa_to_sheet(aoa);x['!cols']=cols.map(function(n){return {wch:n}});XLSX.utils.book_append_sheet(wb,x,name)}
   sheet(dash,[44,18,18],'Dashboard');
-  sheet(all,[6,16,18,7,7,13,13,18,19,19,19,20,7,24,28],'All LRs');
+  sheet(all,[6,16,18,7,7,13,13,18,19,19,19,20,7,24,28,30,16],'All LRs');
+  if(audStats().length)sheet(audAoa(),[22,18,14,14,13,12,16],'Auditors');
   if(w.length){sheet(weightAoa(),[6,16,18,7,18,19,19,19,20,15,9,24,28],'Weight check');sheet(labourAoa(),LABW,'Labour lifted')}
   if(S.excess.length){
     var ea=[['Type','LR No / Name','From (Booking Stn)','Articles','Weight (kg)','Description','Note']];
@@ -1612,12 +1776,13 @@ function cftBlock(i){
   return h;
 }
 function extraHtml(i){
-  var p=[];
-  if(cftOf(i)>0)p.push('<b>CFT:</b> '+cftOf(i).toFixed(2)+' ('+cftWt(i).toFixed(2)+' kg)');
-  if(i.hist&&i.hist.length>1)p.push('<b>Found in rounds:</b> '+i.hist.join(' + '));
-  var wb=wbadge(i);if(wb)p.push(wb);
-  if(cftMissing(i)&&physOf(i)>0)p.push('<span class="wbadge bad">CFT missing</span>');
-  
+  var p=[],W=S.tab==='wt';
+  if(W){
+    if(cftOf(i)>0)p.push('<b>CFT:</b> '+cftOf(i).toFixed(2)+' ('+cftWt(i).toFixed(2)+' kg)');
+    var wb=wbadge(i);if(wb)p.push(wb);
+    if(wByText(i))p.push('<b>Weighed by:</b> '+esc(wByText(i)));
+    if(cftMissing(i)&&physOf(i)>0)p.push('<span class="wbadge bad">CFT missing</span>');
+  }else{if(i.hist&&i.hist.length>1)p.push('<b>Found in rounds:</b> '+i.hist.join(' + '));if(i.by&&i.by.length)p.push('<b>Checked by:</b> '+esc(byText(i)))}
   return (p.length?'<p class="rmk">'+p.join(' &nbsp;·&nbsp; ')+'</p>':'')+(i.remark?'<p class="rnote"><b>REMARK</b>'+esc(i.remark)+'</p>':'');
 }
 function cftSection(){
@@ -1679,7 +1844,7 @@ function tilePanel(){
   var d=tileData(k),l=d.list;if(!l.length)return '';
   var h='<div class="tpanel tp-'+k+'" id="tpanel"><div class="tph"><b>'+(TTITLE[k]||k)+' · '+l.length+(d.ex?(l.length>1?' entries':' entry'):' LR'+(l.length>1?'s':''))+'</b><button type="button" class="link" data-act="tileclose">Close</button></div><div class="chiprow">';
   if(d.ex)h+=l.map(function(x){return '<div class="lrchip"><span class="lrh">'+(x.lr||x.lr4?esc(x.lr||x.lr4):'No LR / name')+'</span><small>'+x.qty+' article'+(+x.qty>1?'s':'')+(x.crno?' · CR '+esc(x.crno):'')+(x.wt?' · '+esc(x.wt)+' kg':'')+(x.desc?' · '+esc(x.desc):'')+'</small></div>'}).join('');
-  else h+=l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr)+'</span><small>'+esc(tileChipSmall(k,i))+'</small></button>'}).join('');
+  else h+=l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-w="'+((k==='wt'||k==='lift'||k==='loss')?1:0)+'" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr)+'</span><small>'+esc(tileChipSmall(k,i))+'</small></button>'}).join('');
   h+='</div>'+(d.ex?'':'<p class="hint2">Tap an LR to open it.</p>')+'</div>';
   return h;
 }
@@ -1712,6 +1877,7 @@ function renderSummary(){
   h+=labourSection();
   h+=hoSection();
   h+=branchSection();
+  h+=auditorSection();
   h+=teamSection();
   h+='<div class="acts"><button type="button" class="btn line" data-act="copy">Copy summary text</button><button type="button" class="btn line" data-act="xlsx">Excel of checked weights ('+wtItems().length+')</button></div>';
 
@@ -1803,12 +1969,13 @@ document.addEventListener('click',function(e){
       var sp=S.items[id];if(!sp)return;
       if(physOf(sp)<=0){toast('Enter the weight first');return}
       if(cftMissing(sp)){
-        toast('CFT is compulsory for W LRs. Enter length, width and height first.');
+        toast('CFT is compulsory for W LRs. Enter length, width and height, then save again.');
+        var dt=document.querySelector('details.cftd[data-cid="'+id+'"]');if(dt){dt.open=true;S.cftOpen=S.cftOpen||{};S.cftOpen[id]=true}
         var cu=$('#cu-'+id),cb=cu&&cu.closest?cu.closest('.cft'):null;if(cb)cb.classList.add('need');
         var fi=document.querySelector('.cd[data-id="'+id+'"]');if(fi)fi.focus();
         return;
       }
-      if(sp.pw)sp.pw.at=Date.now();
+      if(sp.pw){sp.pw.at=Date.now();sp.pw.by=whoNow()}
       save();
       toast('Weight saved: LR …'+lrBase(sp.lr).slice(-4)+' · '+physOf(sp).toFixed(2)+' kg');
       if(S.q){if(matches(S.q).length===1){S.q='';var qq=$('#q');qq.value='';qq.focus()}}else S.open=null;
@@ -1817,7 +1984,13 @@ document.addEventListener('click',function(e){
     case 'tile':{var tk=el.getAttribute('data-k');if(!tileData(tk).list.length){toast('Nothing here yet');break}S.tileOpen=S.tileOpen===tk?null:tk;renderSummary();break}
     case 'tileclose':S.tileOpen=null;renderSummary();break;
     case 'tilego':{var tg=el.getAttribute('data-k');if(!tileData(tg).list.length){toast('Nothing here yet');break}S.tileOpen=tg;S.tab='sum';S.q='';$('#q').value='';refresh();window.scrollTo(0,0);break}
-    case 'gocheck':S.tab='check';S.filter='all';S.open=id;refresh();window.scrollTo(0,0);setTimeout(function(){var rw=document.querySelector('.row[data-id="'+id+'"]');if(rw)rw.scrollIntoView({block:'start'})},60);break;
+    case 'wtshow':S.wtHide=false;save();refresh();break;
+    case 'wtscope':S.wtHide=el.getAttribute('data-v')==='skip';S.open=null;save();refresh();break;
+    case 'wfilter':S.wf=el.getAttribute('data-f');S.open=null;refresh();break;
+    case 'wttog':S.wtHide=!S.wtHide;save();refresh();break;
+    case 'wtclear':S.wtUpto='';S.wtHide=true;save();refresh();break;
+    case 'wtfile':{var wf=$('#indtfile');if(wf)wf.click();break}
+    case 'gocheck':{var gi=S.items.filter(function(x){return String(x.id)===String(id)})[0];var gw=el.getAttribute('data-w')==='1';if(gw&&gi&&earlier(gi))S.wtHide=false;S.tab=gw?'wt':'check';S.filter='all';S.wf='all';S.open=id;}refresh();window.scrollTo(0,0);setTimeout(function(){var rw=document.querySelector('.row[data-id="'+id+'"]');if(rw)rw.scrollIntoView({block:'start'})},60);break;
     case 'sample':start('Sample: GKP stock statement, 16 Oct 2026',sampleItems(),0,true);break;
     case 'map-go':{
       var m={lr:+$('#m-lr').value,noa:+$('#m-noa').value,desc:$('#m-desc').value===''?null:+$('#m-desc').value};
@@ -1825,7 +1998,7 @@ document.addEventListener('click',function(e){
       if(!r.items.length){showErr('No LR numbers found in those columns. Pick different columns.');return}
       showErr('');$('#mapper').hidden=true;start(S.mapperName,r.items,r.dups,false);break;
     }
-    case 'tab':S.tab=el.getAttribute('data-tab');S.confirmBulk=false;refresh();window.scrollTo(0,0);if(S.tab==='check')$('#q').focus({preventScroll:true});break;
+    case 'tab':S.tab=el.getAttribute('data-tab');S.confirmBulk=false;S.open=null;refresh();window.scrollTo(0,0);if(S.tab!=='sum')$('#q').focus({preventScroll:true});break;
     case 'filter':S.filter=el.getAttribute('data-f');S.open=null;refresh();break;
     case 'toggle':S.open=S.open===id?null:id;renderResults();break;
     case 'all':mark(id,S.items[id].noa);break;
@@ -1836,10 +2009,10 @@ document.addEventListener('click',function(e){
     case 'tmmine':if(S.team){tmClear(id,el.getAttribute('data-t'));refresh()}break;
     case 'tmmineall':if(S.team){S.team.clashes=[];refresh()}break;
     case 'tmtheirs':case 'tmboth':if(S.team){var ty=el.getAttribute('data-t')||'weight',cc=S.team.clashes.filter(function(c){return c.id===id&&c.type===ty})[0];if(cc){var it9=S.items[id];
-      if(ty==='stock'&&act==='tmboth'){var m9=it9.found||0,t9=cc.th.found||0;it9.hist=((it9.hist&&it9.hist.length)?it9.hist:[m9]).concat(t9);it9.found=Math.min(it9.noa,m9+t9);it9.cr=false}
-      else if(ty==='stock'){it9.found=cc.th.found;it9.hist=cc.th.hist;it9.cr=cc.th.cr}
-      else if(act==='tmboth'){var base=tmRows(it9.pw);it9.pw={rows:base.concat(cc.th.pw.rows)}}
-      else it9.pw={rows:cc.th.pw.rows};
+      if(ty==='stock'&&act==='tmboth'){var m9=it9.found||0,t9=cc.th.found||0;it9.hist=((it9.hist&&it9.hist.length)?it9.hist:[m9]).concat(t9);it9.found=Math.min(it9.noa,m9+t9);it9.cr=false;it9.by=(it9.by||[]).concat(cc.th.by||[])}
+      else if(ty==='stock'){it9.found=cc.th.found;it9.hist=cc.th.hist;it9.cr=cc.th.cr;it9.by=cc.th.by}
+      else if(act==='tmboth'){var base=tmRows(it9.pw);it9.pw={rows:base.concat(cc.th.pw.rows),by:[it9.pw&&it9.pw.by,cc.th.pw.by].filter(Boolean).join(' + ')}}
+      else it9.pw={rows:cc.th.pw.rows,by:cc.th.pw.by||''};
       tmClear(id,ty);save();refresh()}}break;
     case 'crstock':markCr(id);break;
     case 'part':mark(id,parseInt(el.getAttribute('data-n'),10));break;
@@ -1866,7 +2039,7 @@ document.addEventListener('click',function(e){
     }
     case 'qclear':S.q='';$('#q').value='';$('#q').focus();refresh();break;
     case 'undo':
-      if(S.last){S.items[S.last.id].found=S.last.prev;S.items[S.last.id].hist=S.last.prevH;S.items[S.last.id].cr=!!S.last.prevCr;save();S.last=null;$('#toast').classList.remove('show');refresh()}
+      if(S.last){S.items[S.last.id].found=S.last.prev;S.items[S.last.id].hist=S.last.prevH;S.items[S.last.id].cr=!!S.last.prevCr;S.items[S.last.id].by=S.last.prevBy||null;save();S.last=null;$('#toast').classList.remove('show');refresh()}
       break;
     case 'xopen':S.xform={kind:xk(el.getAttribute('data-k')),lr:S.q||''};S.open=null;refresh();window.scrollTo(0,0);break;
     case 'xkind':{var cx=$('#xl');if(cx&&S.xform)S.xform.lr=cx.value;if(S.xform)S.xform.kind=xk(el.getAttribute('data-k'));renderResults();break}
@@ -1931,14 +2104,14 @@ document.addEventListener('change',function(e){
     if(it&&it.pw){var r=it.pw.rows[parseInt(t.getAttribute('data-r'),10)];r.m=t.value;if(t.value==='each'&&!r.q)r.q=String(it.noa);save();renderResults()}
   }
 });
-function pwUpdate(id){var it=S.items[id],el=$('#pr-'+id),ps=$('#ps-'+id);if(it&&el)el.innerHTML=pwResult(it);if(it&&ps)ps.textContent=pwStat(it);var cx=$('#ct-'+id);if(it&&cx&&cx.closest){var b2=cx.closest('.cft');if(b2)b2.classList.toggle('need',cftMissing(it)&&physOf(it)>0)}}
+function pwUpdate(id){var it=S.items[id],el=$('#pr-'+id),ps=$('#ps-'+id);if(it&&it.pw&&physOf(it)>0)it.pw.by=whoNow();if(it&&el)el.innerHTML=pwResult(it);if(it&&ps)ps.textContent=pwStat(it);var cx=$('#ct-'+id);if(it&&cx&&cx.closest){var b2=cx.closest('.cft');if(b2)b2.classList.toggle('need',cftMissing(it)&&physOf(it)>0)}}
 document.addEventListener('input',function(e){
   var t=e.target,c=t.classList;if(!c)return;
   var it=S.items[parseInt(t.getAttribute('data-id'),10)];if(!it)return;
   if(c.contains('pd')&&it.pw){it.pw.rows[parseInt(t.getAttribute('data-r'),10)][t.getAttribute('data-f')]=t.value;it.pw.at=Date.now();save();pwUpdate(it.id)}
   else if(c.contains('pc')){it.cwm=t.value;save();pwUpdate(it.id)}
 });
-function cftUpdate(id){var it=S.items[id],el=$('#ct-'+id),w=$('#cw-'+id);if(!it)return;if(el)el.textContent=cftOf(it).toFixed(2);if(w)w.textContent=cftWt(it).toFixed(2);if(el&&el.closest){var bx=el.closest('.cft');if(bx){bx.classList.toggle('need',cftMissing(it)&&physOf(it)>0);var sp=bx.querySelector('.cfts');if(sp)sp.textContent=cftDims(it)?cftOf(it).toFixed(2)+' CFT':(isW(it)?'Required · tap to enter':'Tap to enter')}}}
+function cftUpdate(id){var it=S.items[id],el=$('#ct-'+id),w=$('#cw-'+id);if(!it)return;var ps2=$('#ps-'+id);if(ps2)ps2.textContent=pwStat(it);if(el)el.textContent=cftOf(it).toFixed(2);if(w)w.textContent=cftWt(it).toFixed(2);if(el&&el.closest){var bx=el.closest('.cft');if(bx){bx.classList.toggle('need',cftMissing(it)&&physOf(it)>0);var sp=bx.querySelector('.cfts');if(sp)sp.textContent=cftDims(it)?cftOf(it).toFixed(2)+' CFT':(isW(it)?'Required · tap to enter':'Tap to enter')}}}
 document.addEventListener('input',function(e){
   var t=e.target;
   if(t.classList&&t.classList.contains('ck')){var it=S.items[parseInt(t.getAttribute('data-id'),10)];if(it&&it.cft){it.cft.k=t.value;var f=parseFloat(t.value);if(f>0)S.kgf=f;save();cftUpdate(it.id)}}
@@ -2053,7 +2226,7 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var APPV=29;
+  var APPV=37;
   var vb=document.getElementById('verbtn');
   function hard(){
     try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
@@ -2072,18 +2245,19 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var bc=document.getElementById('tbcheck'),bs=document.getElementById('tbsum');if(!bc||!bs)return;
-  function onSum(){var s=document.querySelector('#botnav [data-tab=sum]');return !!(s&&s.classList.contains('on'))}
-  function sync(){var s=onSum();bc.classList.toggle('on',!s);bs.classList.toggle('on',s);bc.setAttribute('aria-pressed',!s);bs.setAttribute('aria-pressed',s)}
-  [bc,bs].forEach(function(b){b.addEventListener('mousedown',function(e){e.preventDefault()})});
-  function go(sum){
-    if(sum&&!onSum()){var qc=document.getElementById('qclear');if(qc&&!qc.hidden)qc.click()}
-    if(sum!==onSum()){var t=document.querySelector('#botnav [data-tab='+(sum?'sum':'check')+']');if(t)t.click()}
-    try{document.activeElement&&document.activeElement.blur()}catch(e){}
-    window.scrollTo({top:0,behavior:'smooth'});setTimeout(sync,60);
-  }
-  bc.addEventListener('click',function(){go(false)});
-  bs.addEventListener('click',function(){go(true)});
+  var B={check:document.getElementById('tbcheck'),wt:document.getElementById('tbwt'),sum:document.getElementById('tbsum')};
+  if(!B.check||!B.wt||!B.sum)return;
+  function cur(){var o=document.querySelector('#botnav button.on');return o?o.getAttribute('data-tab'):'check'}
+  function sync(){var c=cur();Object.keys(B).forEach(function(k){B[k].classList.toggle('on',c===k);B[k].setAttribute('aria-pressed',c===k)})}
+  Object.keys(B).forEach(function(k){
+    B[k].addEventListener('mousedown',function(e){e.preventDefault()});
+    B[k].addEventListener('click',function(){
+      if(k==='sum'&&cur()!=='sum'){var qc=document.getElementById('qclear');if(qc&&!qc.hidden)qc.click()}
+      if(cur()!==k){var x=document.querySelector('#botnav [data-tab='+k+']');if(x)x.click()}
+      try{document.activeElement&&document.activeElement.blur()}catch(e){}
+      window.scrollTo({top:0,behavior:'smooth'});setTimeout(sync,60);
+    });
+  });
   setInterval(sync,300);sync();
 })();
 </script>
