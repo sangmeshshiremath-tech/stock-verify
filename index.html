@@ -743,7 +743,7 @@ body[data-tab=wt] .fchip.addx{display:none}
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v39 · tap to refresh app</button></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v40 · tap to refresh app</button></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -766,7 +766,7 @@ body[data-tab=wt] .fchip.addx{display:none}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 39</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 40</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -824,7 +824,7 @@ function sumNoa(a){return a.reduce(function(s,i){return s+i.noa},0)}
 function counts(){var g=groups();return {ok:g.ok.length,warn:g.warn.length,bad:g.bad.length,idle:g.idle.length,cr:g.cr.length,total:S.items.length,noa:sumNoa(S.items),found:S.items.reduce(function(s,i){return s+(i.found||0)},0)}}
 function lrBase(lr){var m=/^(\d{4,})[-\/\s]*[A-Za-z]{1,3}$/.exec(String(lr));return m?m[1]:String(lr)}
 function lrHtml(lr){var b=lrBase(lr),x=String(lr).slice(b.length).replace(/^[-\/\s]+/,'');return '<span class="pre">'+esc(b.slice(0,-4))+'</span><b>'+esc(b.slice(-4))+'</b>'+(x?'<span class="sfx">'+esc(x)+'</span>':'')}
-function matches(q){var u=q.toUpperCase();return S.items.filter(function(i){return lrBase(i.lr).toUpperCase().slice(-u.length)===u})}
+function matches(q){var u=q.toUpperCase();var r=S.items.filter(function(i){return lrBase(i.lr).toUpperCase().slice(-u.length)===u});if(r.length>1){var ex=r.filter(function(i){return lrBase(i.lr).toUpperCase()===u});if(ex.length)return ex}return r}
 
 /* ---------- parsing the Excel sheet ---------- */
 var LABELS={
@@ -2237,7 +2237,7 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var APPV=39;
+  var APPV=40;
   var vb=document.getElementById('verbtn');
   function hard(){
     try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
