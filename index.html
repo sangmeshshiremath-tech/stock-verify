@@ -753,7 +753,7 @@ body[data-tab=wt] .fchip.addx{display:none}
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v4.4 · tap to refresh app</button></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v4.5 · tap to refresh app</button></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -776,7 +776,7 @@ body[data-tab=wt] .fchip.addx{display:none}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 4.4</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 4.5</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -875,7 +875,8 @@ function dtOf(v){
 function dmy(s){if(!s)return '';var p=s.split('-');return p[2]+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+p[0]}
 function earlier(i){return !!(S.wtUpto&&i.indt&&i.indt<=S.wtUpto)}
 function stKey(i){return String(i.stn||'').trim().toUpperCase()}
-function vis(l){if(S.wtBrOn&&S.wtBr)return l.filter(function(i){return stKey(i)===S.wtBr});return (S.wtHide&&S.wtUpto)?l.filter(function(i){return !earlier(i)}):l}
+function vis(l){var r=(S.wtHide&&S.wtUpto)?l.filter(function(i){return !earlier(i)}):l;if(S.wtBr)r=r.filter(function(i){return stKey(i)===S.wtBr});return r}
+function visNoBr(l){return (S.wtHide&&S.wtUpto)?l.filter(function(i){return !earlier(i)}):l}
 function lrOf(v){
   var s=typeof v==='number'?String(Math.round(v)):cs(v).replace(/\s+/g,'');
   var mm=/^(\d{4,})[-\/]?([A-Za-z]{1,3})$/.exec(s);if(mm)s=mm[1]+'-'+mm[2].toUpperCase();
@@ -1082,16 +1083,10 @@ function refresh(){
 }
 function wDone(i){return physOf(i)>0&&!cftMissing(i)}
 function wtScopeCard(){
-  var br=!!S.wtBrOn,skip=!!S.wtHide&&!br,n=S.items.filter(earlier).length,withD=S.items.filter(function(i){return i.indt}).length;
-  var h='<div class="wscope"><div class="wst">Which LRs will you weigh?</div><div class="seg2 s3">'+
-    '<button type="button" class="sg'+(skip||br?'':' on')+'" data-act="wtscope" data-v="all">All LRs<small>Weigh every LR</small></button>'+
-    '<button type="button" class="sg'+(skip?' on':'')+'" data-act="wtscope" data-v="skip">Skip weighed earlier<small>'+(S.wtUpto?n+' LRs skipped':'Previous auditor took weights')+'</small></button>'+
-    '<button type="button" class="sg'+(br?' on':'')+'" data-act="wtscope" data-v="br">Booking branch<small>'+(S.wtBr?esc(S.wtBr)+' only, even if weighed':'Weigh one branch, even if weighed')+'</small></button></div>';
-  if(br){
-    var cnt={},ord=[];S.items.forEach(function(i){var k=stKey(i);if(!k)return;if(!cnt[k]){cnt[k]=0;ord.push(k)}cnt[k]++});ord.sort();
-    h+='<label>Booked from branch<select id="wtbr"><option value="">All branches</option>'+ord.map(function(k){return '<option value="'+esc(k)+'"'+(S.wtBr===k?' selected':'')+'>'+esc(k)+' ('+cnt[k]+' LRs)</option>'}).join('')+'</select></label>';
-    h+='<p class="hint2">Shows only LRs booked from the branch you pick, even if a previous auditor already weighed them. Use this when your manager asks you to weigh stock of a particular branch again.</p>';
-  }
+  var skip=!!S.wtHide,n=S.items.filter(earlier).length,withD=S.items.filter(function(i){return i.indt}).length;
+  var h='<div class="wscope"><div class="wst">Which LRs will you weigh?</div><div class="seg2">'+
+    '<button type="button" class="sg'+(skip?'':' on')+'" data-act="wtscope" data-v="all">All LRs<small>Weigh every LR</small></button>'+
+    '<button type="button" class="sg'+(skip?' on':'')+'" data-act="wtscope" data-v="skip">Skip weighed earlier<small>'+(S.wtUpto?n+' LRs skipped':'Previous auditor took weights')+'</small></button></div>';
   if(skip){
     h+='<label>Previous auditor took weights up to (last date)<input id="wtdate" type="date" value="'+esc(S.wtUpto||'')+'"></label>';
     h+='<p class="hint2">LRs that came to the godown (INTSDT) on or before this date are treated as already weighed and hidden from this list. If the labour tells the last 4 digits of an LR that is not here, it was weighed already.</p>';
@@ -1103,6 +1098,10 @@ function wtScopeCard(){
         S.items.filter(earlier).map(function(i){return '<div class="lrchip full"><span class="lrh">'+lrHtml(i.lr)+'</span><small>NOA '+i.noa+(wtLabel(i)?' · '+esc(wtLabel(i)):'')+' · came '+esc(dmy(i.indt))+'</small></div>'}).join('')+'</details>';
     }
   }
+  var pool=visNoBr(S.items),cnt={},ord=[];pool.forEach(function(i){var k=stKey(i);if(!k)return;if(!cnt[k]){cnt[k]=0;ord.push(k)}cnt[k]++});ord.sort();
+  if(S.wtBr&&!cnt[S.wtBr]){cnt[S.wtBr]=0;ord.push(S.wtBr)}
+  h+='<label>Booking branch filter (optional)<select id="wtbr"><option value="">All branches</option>'+ord.map(function(k){return '<option value="'+esc(k)+'"'+(S.wtBr===k?' selected':'')+'>'+esc(k)+' ('+cnt[k]+' LRs)</option>'}).join('')+'</select></label>';
+  h+='<p class="hint2">'+(S.wtBr?'Showing only LRs booked from '+esc(S.wtBr)+(skip?', after skipping the ones weighed earlier.':'.'):'Pick a branch to weigh only the LRs booked from it. It works with both choices above.')+'</p>';
   return h+'</div>';
 }
 function renderFilters(c){
@@ -1267,7 +1266,7 @@ function renderResults(){
   if(S.xform&&!W){$('#results').innerHTML=xformHtml();return}
   if(q){
     var all=matches(q);list=W?vis(all):all;var hid=all.length-list.length;
-    if(!list.length&&hid&&W&&S.wtBrOn&&S.wtBr){h+='<div class="xform"><p><b>No LR ending with '+esc(q)+' is booked from '+esc(S.wtBr)+'.</b></p><p style="color:var(--ink2)">Change the branch under Which LRs will you weigh?, or choose All LRs.</p></div>'}else if(!list.length&&hid){h+=earlyCard(all)}else if(!list.length){
+    if(!list.length&&hid&&W&&S.wtBr&&!all.some(function(i){return S.wtHide&&earlier(i)&&stKey(i)===S.wtBr})){h+='<div class="xform"><p><b>No LR ending with '+esc(q)+' booked from '+esc(S.wtBr)+' in this list.</b></p><p style="color:var(--ink2)">Change the booking branch filter under Which LRs will you weigh?</p></div>'}else if(!list.length&&hid){h+=earlyCard(all)}else if(!list.length){
       h+='<div class="xform"><p><b>No LR on the sheet ends with '+esc(q)+'.</b></p>';
       if(W)h+='<p style="color:var(--ink2)">Check the digits. If it is in the godown but not on the stock sheet, add it in the Stock tab.</p>';
       else if(q.length>=4){
@@ -1277,7 +1276,7 @@ function renderResults(){
     }else if(list.length>1){
       h+='<p class="note">'+list.length+' LRs end with '+esc(q)+'. '+(W?'Weigh each one.':'Mark each one.')+' Or ask labour for the full number and type more digits above, or tap one below.</p>'+narrowChips(list,q);
     }
-    if(hid&&list.length)h+='<p class="note">'+hid+' more LR'+(hid>1?'s':'')+' ending '+esc(q)+(S.wtBrOn?' booked from other branches (hidden).':' already weighed earlier (hidden).')+'</p>';
+    if(hid&&list.length)h+='<p class="note">'+hid+' more LR'+(hid>1?'s':'')+' ending '+esc(q)+' hidden by your filters.'+'</p>';
   }else{
     if(W){var wf=S.wf||'todo';list=vis(S.items).filter(function(i){return wf==='all'||(wf==='done'?wDone(i):!wDone(i))});if(!list.length)h+='<p class="empty">'+(wf==='todo'?'Nothing left to weigh in this list.':'Nothing in this list.')+'</p>'}
     else{list=S.items.filter(function(i){return S.filter==='all'||st(i)===S.filter});if(!list.length)h+='<p class="empty">Nothing in this list.</p>'}
@@ -1353,7 +1352,7 @@ function cftDims(i){
   var d=i.cft.rows.filter(function(r){return parseFloat(r.l)>0&&parseFloat(r.w)>0&&parseFloat(r.h)>0}).map(function(r){return r.l+'×'+r.w+'×'+r.h});
   return d.length?d.join('; ')+' '+i.cft.u:'';
 }
-function cftMissing(i){return isW(i)&&!cftDims(i)&&!(earlier(i)&&!S.wtBrOn)}
+function cftMissing(i){return isW(i)&&!cftDims(i)&&!(earlier(i)&&S.wtHide)}
 function cftMissingSection(){
   var w=S.items.filter(function(i){return cftMissing(i)&&physOf(i)>0});if(!w.length)return '';
   var rows=w.map(function(i){var s=st(i);return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td>'+esc(i.stn)+'</td><td class="n">'+i.noa+'</td><td><span class="spill st-'+s+'">'+(s==='cr'?'CR stock':s==='ok'?'All found':s==='bad'?'Not found':s==='warn'?i.found+' of '+i.noa:'Not checked')+'</span></td></tr>'}).join('');
@@ -2018,7 +2017,7 @@ document.addEventListener('click',function(e){
     case 'tileclose':S.tileOpen=null;renderSummary();break;
     case 'tilego':{var tg=el.getAttribute('data-k');if(!tileData(tg).list.length){toast('Nothing here yet');break}S.tileOpen=tg;S.tab='sum';S.q='';$('#q').value='';refresh();window.scrollTo(0,0);break}
     case 'wtshow':S.wtHide=false;save();refresh();break;
-    case 'wtscope':var wv=el.getAttribute('data-v');S.wtHide=wv==='skip';S.wtBrOn=wv==='br';if(wv!=='br')S.wtBr=S.wtBr;S.open=null;save();refresh();break;
+    case 'wtscope':S.wtHide=el.getAttribute('data-v')==='skip';S.wtBrOn=false;S.open=null;save();refresh();break;
     case 'wfilter':S.wf=el.getAttribute('data-f');S.open=null;refresh();break;
     case 'wttog':S.wtHide=!S.wtHide;save();refresh();break;
     case 'wtclear':S.wtUpto='';S.wtHide=true;save();refresh();break;
@@ -2265,7 +2264,7 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var APPV=44;
+  var APPV=45;
   var vb=document.getElementById('verbtn');
   function hard(){
     try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}

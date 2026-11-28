@@ -1,4 +1,4 @@
-var V='lrchk-app-v44',RT='lrchk-libs-v2';
+var V='lrchk-app-v45',RT='lrchk-libs-v2';
 var SHELL=['./','index.html','manifest.webmanifest','icon-192.png','icon-512.png'];
 var LIBS=['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js','https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'];
 self.addEventListener('install',function(e){
