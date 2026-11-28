@@ -412,6 +412,8 @@ div.lrchip{cursor:default}
 .tile small{font-size:12px;color:var(--ink2)}
 .tile.st-ok{background:var(--ok-bg);border-color:var(--ok-line);color:var(--ok)}
 .tile.st-warn{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn)}
+.tile.st-acct{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn);grid-column:1/-1}
+.tpanel.tp-acct{background:var(--warn-bg);border-color:var(--warn-line)}
 .tile.st-bad{background:var(--bad-bg);border-color:var(--bad-line);color:var(--bad)}
 .tile.st-info{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
 .tile small{color:inherit;opacity:.85}
@@ -753,7 +755,7 @@ body[data-tab=wt] .fchip.addx{display:none}
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v4.5 · tap to refresh app</button></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v4.7 · tap to refresh app</button></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -776,7 +778,7 @@ body[data-tab=wt] .fchip.addx{display:none}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 4.5</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 4.7</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -845,7 +847,8 @@ var LABELS={
   stn:['BKGSTN','BOOKINGSTATION','BKGSTATION','BOOKINGSTN','FROM','FROMSTN','FROMSTATION','ORIGIN'],
   wt:['AWTCWT','AWT'],
   days:['DAYS'],
-  intd:['INTSDT','INTSDATE','INTSDT1','INSTDT']
+  intd:['INTSDT','INTSDATE','INTSDT1','INSTDT'],
+  md:['MD']
 };
 function cs(v){if(v==null)return '';if(typeof v==='number')return String(v);return String(v).trim()}
 function headerMap(row){
@@ -902,7 +905,7 @@ function extract(rows,fixed){
     seen[lr]={};
     var sl=parseInt(cs(g('sl')),10);
     var days=cs(g('days'));
-    var nit={id:items.length,sl:isFinite(sl)?sl:items.length+1,lr:lr,noa:noa,desc:cs(g('desc')),stn:cs(g('stn')),wt:cs(g('wt')),days:days,indt:dtOf(g('intd')),found:null};
+    var nit={id:items.length,sl:isFinite(sl)?sl:items.length+1,lr:lr,noa:noa,desc:cs(g('desc')),stn:cs(g('stn')),wt:cs(g('wt')),days:days,indt:dtOf(g('intd')),md:cs(g('md')).toUpperCase(),found:null};
     items.push(nit);seen[lr].it=nit;
   });
   return {items:items,dups:dups};
@@ -1102,6 +1105,7 @@ function wtScopeCard(){
   if(S.wtBr&&!cnt[S.wtBr]){cnt[S.wtBr]=0;ord.push(S.wtBr)}
   h+='<label>Booking branch filter (optional)<select id="wtbr"><option value="">All branches</option>'+ord.map(function(k){return '<option value="'+esc(k)+'"'+(S.wtBr===k?' selected':'')+'>'+esc(k)+' ('+cnt[k]+' LRs)</option>'}).join('')+'</select></label>';
   h+='<p class="hint2">'+(S.wtBr?'Showing only LRs booked from '+esc(S.wtBr)+(skip?', after skipping the ones weighed earlier.':'.'):'Pick a branch to weigh only the LRs booked from it. It works with both choices above.')+'</p>';
+  h+='<p class="hint2"><button type="button" class="link" data-act="wtfile">Update dates and MD (A) from stock sheet</button></p>';
   return h+'</div>';
 }
 function renderFilters(c){
@@ -1149,19 +1153,19 @@ $('#indtfile').addEventListener('change',function(){
   var rd=new FileReader();
   rd.onload=function(){
     try{
-      var wb=XLSX.read(new Uint8Array(rd.result),{type:'array'}),map={},cnt=0,seenCol=false;
+      var wb=XLSX.read(new Uint8Array(rd.result),{type:'array'}),map={},mdm={},cnt=0,mcnt=0,seenCol=false;
       wb.SheetNames.forEach(function(nm){
         var m=null;
         sheetRows(wb,nm).forEach(function(row){
           if(!Array.isArray(row))return;
           var hm=headerMap(row);if(hm){m=hm;return}
-          if(!m||m.intd==null)return;seenCol=true;
-          var lr=lrOf(row[m.lr]),d=dtOf(row[m.intd]);if(lr&&d)map[lr]=d;
+          if(!m||(m.intd==null&&m.md==null))return;seenCol=true;
+          var lr=lrOf(row[m.lr]),d=m.intd!=null?dtOf(row[m.intd]):'';if(lr&&d)map[lr]=d;if(lr&&m.md!=null)mdm[lr]=cs(row[m.md]).toUpperCase();
         });
       });
-      S.items.forEach(function(i){if(map[i.lr]){i.indt=map[i.lr];cnt++}});
+      S.items.forEach(function(i){if(map[i.lr]){i.indt=map[i.lr];cnt++}if(mdm[i.lr]!=null){i.md=mdm[i.lr];if(i.md==='A')mcnt++}});
       save();refresh();
-      toast(!seenCol?'No INTSDT column found in this file':cnt+' LRs now have dates');
+      toast(!seenCol?'No INTSDT or MD column found in this file':cnt+' LRs have dates · '+mcnt+' A (account party) LRs');
     }catch(x){toast('Could not read this file')}
   };
   rd.readAsArrayBuffer(f);
@@ -1356,7 +1360,7 @@ function cftMissing(i){return isW(i)&&!cftDims(i)&&!(earlier(i)&&S.wtHide)}
 function cftMissingSection(){
   var w=S.items.filter(function(i){return cftMissing(i)&&physOf(i)>0});if(!w.length)return '';
   var rows=w.map(function(i){var s=st(i);return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td>'+esc(i.stn)+'</td><td class="n">'+i.noa+'</td><td><span class="spill st-'+s+'">'+(s==='cr'?'CR stock':s==='ok'?'All found':s==='bad'?'Not found':s==='warn'?i.found+' of '+i.noa:'Not checked')+'</span></td></tr>'}).join('');
-  return '<section class="grp st-bad"><header><h3>CFT missing on W LRs</h3><span>'+w.length+' LRs. CFT is compulsory for W.</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th>Stn</th><th class="n">NOA</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
+  return '<section class="grp st-bad"><header><h3>CFT missing on W / A LRs</h3><span>'+w.length+' LRs. CFT is compulsory for W and A.</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th>Stn</th><th class="n">NOA</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
 function wtItems(){return S.items.filter(function(i){return physOf(i)>0})}
 function awtOf(i){var p=String(i.wt||'').split('/');if(p.length<2)return 0;var v=parseFloat(p[0]);return isFinite(v)?v:0}
@@ -1395,7 +1399,7 @@ function exportWeights(){
       XLSX.utils.book_append_sheet(wb,ews,'Excess, CR & HO line');
     }
     var buf=XLSX.write(wb,{type:'array',bookType:'xlsx'});
-    DL.save({filename:xlsxName(),data:new Uint8Array(buf)}).then(function(){toast('Excel saved'+(miss?'. '+miss+' W LR(s) still need CFT.':''))},function(e){
+    DL.save({filename:xlsxName(),data:new Uint8Array(buf)}).then(function(){toast('Excel saved'+(miss?'. '+miss+' W/A LR(s) still need CFT.':''))},function(e){
       if(e&&e.code==='declined')return;
       copyTsv(tsv);
     });
@@ -1645,7 +1649,7 @@ function fullExport(ts){
     ['Weights taken on LRs',w.length,'of '+c.total],
     ['Total weighed (physical)',rd2(pp),rd2(pp/1000*1000)/1000],['Labour lifted on scale',rd2(pl),rd2(pl)/1000],['Charged weight of these LRs',rd2(pc),rd2(pc)/1000],['Actual weight of these LRs',rd2(pa),rd2(pa)/1000],
     ['Physical minus charged',rd2(pp-pc),''],['LRs in loss',ws.loss,''],['Loss, kg over charged',rd2(ws.kg),''],[],
-    ['OTHER','Count',''],['LRs with a remark',remCount(),''],['W LRs weighed without CFT',cftMiss,''],
+    ['OTHER','Count',''],['LRs with a remark',remCount(),''],['W / A LRs weighed without CFT',cftMiss,''],
     ['Excess entries',exList('excess').length,exQty('excess')+' articles'],['CR raised entries',exList('cr').length,exQty('cr')+' articles'],['HO line stock entries',exList('ho').length,exQty('ho')+' articles']];
   var all=[['Sl','LR No','From (Booking Stn)','NOA','Found','Status','Articles short','Actual Weight (kg)','Charged Weight (kg)','Physical Weight (kg)','Lifted on Scale (kg)','CFT (L x W x H)','Days','Description','Remark','Checked by','Weighed by']];
   S.items.forEach(function(i){
@@ -1783,7 +1787,8 @@ function remarkSection(){
   }).join('');
   return '<section class="grp st-note"><header><h3>Remarks written</h3><span>'+w.length+' LRs have a remark</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th>Stn</th><th>Status</th><th>Remark</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
-function isW(i){return /-W$/i.test(i.lr)}
+function isW(i){return /-W$/i.test(i.lr)||i.md==='A'}
+function reqWhy(i){return /-W$/i.test(i.lr)?'W':'A'}
 var DIV={'in':1728,'ft':1,'cm':28316.846592};
 function cftOf(i){
   var c=i.cft;if(!c)return 0;var d=DIV[c.u]||1728;
@@ -1796,7 +1801,7 @@ function cftBlock(i){
   var c=i.cft;
   var op=!!(S.cftOpen&&S.cftOpen[i.id])||!!cftDims(i)||(cftMissing(i)&&physOf(i)>0);
   var sm=cftDims(i)?cftOf(i).toFixed(2)+' CFT':(isW(i)?'Required · tap to enter':'Tap to enter');
-  var h='<details class="cft cftd'+(cftMissing(i)&&physOf(i)>0?' need':'')+'" data-cid="'+i.id+'"'+(op?' open':'')+'><summary><b>CFT'+(isW(i)?' (required for W)':'')+'</b><span class="cfts">'+sm+'</span></summary><div class="cft-h"><b>Length × width × height</b><select class="cu" id="cu-'+i.id+'" data-id="'+i.id+'" aria-label="Unit">'+[['in','Inches'],['ft','Feet'],['cm','cm']].map(function(u){return '<option value="'+u[0]+'"'+(c.u===u[0]?' selected':'')+'>'+u[1]+'</option>'}).join('')+'</select></div>';
+  var h='<details class="cft cftd'+(cftMissing(i)&&physOf(i)>0?' need':'')+'" data-cid="'+i.id+'"'+(op?' open':'')+'><summary><b>CFT'+(isW(i)?' (required for '+(reqWhy(i)==='A'?'A · account party':'W')+')':'')+'</b><span class="cfts">'+sm+'</span></summary><div class="cft-h"><b>Length × width × height</b><select class="cu" id="cu-'+i.id+'" data-id="'+i.id+'" aria-label="Unit">'+[['in','Inches'],['ft','Feet'],['cm','cm']].map(function(u){return '<option value="'+u[0]+'"'+(c.u===u[0]?' selected':'')+'>'+u[1]+'</option>'}).join('')+'</select></div>';
   h+='<p class="hint">Measure one article. Same size for all? Keep Qty as the NOA. Different size? Add another size.</p>';
   h+='<div class="ch"><span>Length</span><span>Width</span><span>Height</span><span>Qty</span><span></span></div>';
   c.rows.forEach(function(r,k){
@@ -1850,7 +1855,7 @@ function sumSearchHtml(q){
   }
   return h+'</div>';
 }
-var TTITLE={total:'All LRs on the sheet',ok:'All found',warn:'Short',bad:'Not found',idle:'Not checked',cr:'CR stock (delivered during audit)',wt:'Weights taken',lift:'Labour lifted on scale',loss:'Weight loss (physical more than charged)',rem:'LRs with a remark',excess:'Excess',crr:'CR raised',ho:'HO line stock'};
+var TTITLE={total:'All LRs on the sheet',acct:'A · Account party LRs (CFT compulsory)',ok:'All found',warn:'Short',bad:'Not found',idle:'Not checked',cr:'CR stock (delivered during audit)',wt:'Weights taken',lift:'Labour lifted on scale',loss:'Weight loss (physical more than charged)',rem:'LRs with a remark',excess:'Excess',crr:'CR raised',ho:'HO line stock'};
 function tileData(k){
   var g=groups(),ex=k==='excess'||k==='crr'||k==='ho';
   if(ex){var kind=k==='crr'?'cr':k;return {ex:true,list:exList(kind)}}
@@ -1859,6 +1864,7 @@ function tileData(k){
   else if(k==='wt'||k==='lift')l=wtItems();
   else if(k==='loss')l=S.items.filter(function(i){return wlossOf(i)>0}).sort(function(a,b){return wlossOf(b)-wlossOf(a)});
   else if(k==='rem')l=S.items.filter(hasRem);
+  else if(k==='acct')l=S.items.filter(function(i){return i.md==='A'}).sort(function(a,b){return (cftDims(a)?1:0)-(cftDims(b)?1:0)});
   else l=g[k]||[];
   return {ex:false,list:l};
 }
@@ -1868,6 +1874,7 @@ function tileChipSmall(k,i){
   if(k==='lift')return liftedOf(i).toFixed(2)+' kg lifted';
   if(k==='loss')return '+'+wlossOf(i).toFixed(2)+' kg';
   if(k==='rem')return String(i.remark).slice(0,40);
+  if(k==='acct')return (cftDims(i)?'CFT '+cftOf(i).toFixed(2):'CFT pending')+' · '+(physOf(i)>0?kgS(physOf(i))+' kg':'not weighed');
   if(k==='total')return stLab(i);
   return 'NOA '+i.noa;
 }
@@ -1876,14 +1883,14 @@ function tilePanel(){
   var d=tileData(k),l=d.list;if(!l.length)return '';
   var h='<div class="tpanel tp-'+k+'" id="tpanel"><div class="tph"><b>'+(TTITLE[k]||k)+' · '+l.length+(d.ex?(l.length>1?' entries':' entry'):' LR'+(l.length>1?'s':''))+'</b><button type="button" class="link" data-act="tileclose">Close</button></div><div class="chiprow">';
   if(d.ex)h+=l.map(function(x){return '<div class="lrchip"><span class="lrh">'+(x.lr||x.lr4?esc(x.lr||x.lr4):'No LR / name')+'</span><small>'+x.qty+' article'+(+x.qty>1?'s':'')+(x.crno?' · CR '+esc(x.crno):'')+(x.wt?' · '+esc(x.wt)+' kg':'')+(x.desc?' · '+esc(x.desc):'')+'</small>'+exActs(x,exKind(x))+'</div>'}).join('');
-  else h+=l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-w="'+((k==='wt'||k==='lift'||k==='loss')?1:0)+'" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr)+'</span><small>'+esc(tileChipSmall(k,i))+'</small></button>'}).join('');
+  else h+=l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-w="'+((k==='wt'||k==='lift'||k==='loss'||k==='acct')?1:0)+'" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr)+'</span><small>'+esc(tileChipSmall(k,i))+'</small></button>'}).join('');
   h+='</div>'+(d.ex?'':'<p class="hint2">Tap an LR to open it.</p>')+'</div>';
   return h;
 }
 function renderSummary(){
   if(S.q.trim()){$('#pane-sum').innerHTML=sumSearchHtml(S.q.trim());return}
   var c=counts(),g=groups(),h='<div class="sum">';
-  var ws=wtStats();
+  var ws=wtStats(),acctL=S.items.filter(function(i){return i.md==='A'}),acctN=acctL.length,acctDone=acctL.filter(cftDims).length;
   function tb(k,cls,lab,val,small){return '<button type="button" class="tile '+cls+' tilebtn'+(S.tileOpen===k?' on':'')+'" data-act="tile" data-k="'+k+'"><span>'+lab+'</span><b>'+val+'</b><small>'+small+'</small></button>'}
   h+='<div class="tiles">'+
     tb('total','','Total LRs',c.total,c.noa+' articles')+
@@ -1896,6 +1903,7 @@ function renderSummary(){
     (remCount()?tb('rem','st-note','Remarks',remCount(),'LRs with a remark'):'')+
     (ws.n?tb('lift','st-info','Lifted on scale',liftedTotal().toFixed(1),'kg · '+tonStr(liftedTotal())):'')+
     (ws.n?tb('loss','st-loss','Weight loss',ws.loss,ws.kg.toFixed(2)+' kg over charged'):'')+
+    (acctN?tb('acct','st-acct','A · Account party',acctN,'CFT done '+acctDone+' · pending '+(acctN-acctDone)):'')+
     tb('excess','st-info','Excess',exList('excess').length,exQty('excess')+' articles')+
     tb('crr','st-info','CR raised',exList('cr').length,exQty('cr')+' articles')+
     tb('ho','st-info','HO line stock',exList('ho').length,exQty('ho')+' articles')+
@@ -1955,9 +1963,9 @@ function summaryText(){
   var wq=S.items.filter(function(i){return physOf(i)>0}).sort(function(a,b){return wlossOf(b)-wlossOf(a)});
   if(wq.length){L.push('');L.push('PHYSICAL VS CHARGED WEIGHT (loss first)');wq.forEach(function(i){var c=cwtOf(i);L.push('  #'+i.sl+'  '+i.lr+(i.stn?' ('+i.stn+')':'')+'  NOA '+i.noa+'  actual '+(awtOf(i)>0?awtOf(i).toFixed(2):'n/a')+' kg  physical '+physOf(i).toFixed(2)+' kg  charged '+(c?c.toFixed(2):'n/a')+' kg'+(cftDims(i)?'  CFT '+cftDims(i):'')+(wlossOf(i)?'  LOSS +'+wdiff(i).toFixed(2)+' kg':''))})}
   var cm=S.items.filter(function(i){return cftMissing(i)&&physOf(i)>0});
-  if(cm.length){L.push('');L.push('W LRs WITHOUT CFT ('+cm.length+')');cm.forEach(function(i){L.push('  #'+i.sl+'  '+i.lr)})}
+  if(cm.length){L.push('');L.push('W / A LRs WITHOUT CFT ('+cm.length+')');cm.forEach(function(i){L.push('  #'+i.sl+'  '+i.lr)})}
   var wl=S.items.filter(isW);
-  if(wl.length){L.push('');L.push('W CONSIGNMENTS - CFT');wl.forEach(function(i){var cv=cftOf(i);L.push('  #'+i.sl+'  '+i.lr+(i.stn?' ('+i.stn+')':'')+'  NOA '+i.noa+'  CFT '+(cv?cv.toFixed(2)+' ('+cftWt(i).toFixed(2)+' kg)':'not entered'))})}
+  if(wl.length){L.push('');L.push('W / A CONSIGNMENTS - CFT');wl.forEach(function(i){var cv=cftOf(i);L.push('  #'+i.sl+'  '+i.lr+(i.stn?' ('+i.stn+')':'')+'  NOA '+i.noa+'  CFT '+(cv?cv.toFixed(2)+' ('+cftWt(i).toFixed(2)+' kg)':'not entered'))})}
   var rm=S.items.filter(function(i){return i.remark});
   if(rm.length){L.push('');L.push('REMARKS ('+rm.length+')');rm.forEach(function(i){L.push('  #'+i.sl+'  '+i.lr+(i.stn?' ('+i.stn+')':'')+'  '+i.remark)})}
   L.push('');L.push('GREEN - ALL FOUND: '+g.ok.length+' LRs');
@@ -2001,7 +2009,7 @@ document.addEventListener('click',function(e){
       var sp=S.items[id];if(!sp)return;
       if(physOf(sp)<=0){toast('Enter the weight first');return}
       if(cftMissing(sp)){
-        toast('CFT is compulsory for W LRs. Enter length, width and height, then save again.');
+        toast('CFT is compulsory for W and A (account party) LRs. Enter length, width and height, then save again.');
         var dt=document.querySelector('details.cftd[data-cid="'+id+'"]');if(dt){dt.open=true;S.cftOpen=S.cftOpen||{};S.cftOpen[id]=true}
         var cu=$('#cu-'+id),cb=cu&&cu.closest?cu.closest('.cft'):null;if(cb)cb.classList.add('need');
         var fi=document.querySelector('.cd[data-id="'+id+'"]');if(fi)fi.focus();
@@ -2264,7 +2272,7 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var APPV=45;
+  var APPV=47;
   var vb=document.getElementById('verbtn');
   function hard(){
     try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
