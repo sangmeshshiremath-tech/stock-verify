@@ -255,6 +255,7 @@ button{cursor:pointer}
 .legend .st-warn{background:var(--warn-solid);border-color:var(--warn-solid);color:var(--on-solid)}
 .legend .st-bad{background:var(--bad-solid);border-color:var(--bad-solid);color:var(--on-solid)}
 .sfx{font-family:var(--f-body);font-size:12px;font-weight:700;margin-left:6px;padding:1px 6px;border-radius:6px;background:var(--ink);color:var(--bg);vertical-align:3px;letter-spacing:0}
+.sfx.sfxa{background:#E8A200;color:#1B1B1B}
 .cft{display:grid;gap:8px;padding:10px;border:1px dashed var(--ink2);border-radius:10px}
 .cft-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .cft-h b{font-size:13px}
@@ -755,7 +756,7 @@ body[data-tab=wt] .fchip.addx{display:none}
 <section id="work" hidden>
   <div class="deck">
     <div class="deck-top">
-      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v4.7 · tap to refresh app</button></div>
+      <div class="brand"><b>Stock Verify</b><span class="by"><span class="lbl">by</span><span class="nm">Sangmesh Hiremath</span></span><span id="saved" class="saved"></span><button type="button" id="verbtn" class="verbtn">v4.8 · tap to refresh app</button></div>
       <div class="tabs" role="group" aria-label="View" hidden>
         <button type="button" data-act="tab" data-tab="check" class="on" aria-pressed="true">Check</button>
         <button type="button" data-act="tab" data-tab="sum" aria-pressed="false">Summary</button>
@@ -778,7 +779,7 @@ body[data-tab=wt] .fchip.addx{display:none}
   </div>
   <div id="pane-sum" hidden></div>
 </section>
-<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 4.7</div></div>
+<div class="credit">by <span class="nm">Sangmesh Hiremath</span><div class="ver">Version 4.8</div></div>
 
 </div></div>
 <nav id="botnav" class="botnav" hidden><div class="in">
@@ -835,7 +836,7 @@ function groups(){var g={ok:[],warn:[],bad:[],idle:[],cr:[]};S.items.forEach(fun
 function sumNoa(a){return a.reduce(function(s,i){return s+i.noa},0)}
 function counts(){var g=groups();return {ok:g.ok.length,warn:g.warn.length,bad:g.bad.length,idle:g.idle.length,cr:g.cr.length,total:S.items.length,noa:sumNoa(S.items),found:S.items.reduce(function(s,i){return s+(i.found||0)},0)}}
 function lrBase(lr){var m=/^(\d{4,})[-\/\s]*[A-Za-z]{1,3}$/.exec(String(lr));return m?m[1]:String(lr)}
-function lrHtml(lr){var b=lrBase(lr),x=String(lr).slice(b.length).replace(/^[-\/\s]+/,'');return '<span class="pre">'+esc(b.slice(0,-4))+'</span><b>'+esc(b.slice(-4))+'</b>'+(x?'<span class="sfx">'+esc(x)+'</span>':'')}
+function lrHtml(lr,it){var b=lrBase(lr),x=String(lr).slice(b.length).replace(/^[-\/\s]+/,'');return '<span class="pre">'+esc(b.slice(0,-4))+'</span><b>'+esc(b.slice(-4))+'</b>'+(x?'<span class="sfx">'+esc(x)+'</span>':'')+(it&&it.md==='A'?'<span class="sfx sfxa">A</span>':'')}
 function matches(q){var u=q.toUpperCase();var r=S.items.filter(function(i){return lrBase(i.lr).toUpperCase().slice(-u.length)===u});if(r.length>1){var ex=r.filter(function(i){return lrBase(i.lr).toUpperCase()===u});if(ex.length)return ex}return r}
 
 /* ---------- parsing the Excel sheet ---------- */
@@ -1098,7 +1099,7 @@ function wtScopeCard(){
     if(S.wtUpto&&n){
       var noa=0;S.items.filter(earlier).forEach(function(i){noa+=i.noa});
       h+='<details class="wsk"><summary>Weighed earlier · '+n+' LRs · '+noa+' articles</summary>'+
-        S.items.filter(earlier).map(function(i){return '<div class="lrchip full"><span class="lrh">'+lrHtml(i.lr)+'</span><small>NOA '+i.noa+(wtLabel(i)?' · '+esc(wtLabel(i)):'')+' · came '+esc(dmy(i.indt))+'</small></div>'}).join('')+'</details>';
+        S.items.filter(earlier).map(function(i){return '<div class="lrchip full"><span class="lrh">'+lrHtml(i.lr,i)+'</span><small>NOA '+i.noa+(wtLabel(i)?' · '+esc(wtLabel(i)):'')+' · came '+esc(dmy(i.indt))+'</small></div>'}).join('')+'</details>';
     }
   }
   var pool=visNoBr(S.items),cnt={},ord=[];pool.forEach(function(i){var k=stKey(i);if(!k)return;if(!cnt[k]){cnt[k]=0;ord.push(k)}cnt[k]++});ord.sort();
@@ -1134,7 +1135,7 @@ function rowHtml(i,open){
   var meta=[i.desc,i.stn,wtLabel(i),i.days!==''?i.days+(String(i.days)==='1'?' day':' days'):'',W&&earlier(i)?'Weighed earlier':''].filter(Boolean).join(' · ');
   return '<article class="row st-'+s+(W&&wlossOf(i)?' wloss':'')+'" data-id="'+i.id+'">'+
     '<button type="button" class="head" data-act="toggle" data-id="'+i.id+'" aria-expanded="'+(open?'true':'false')+'">'+
-    '<span class="sl">'+esc(i.sl)+'</span><span class="lr">'+lrHtml(i.lr)+'</span>'+
+    '<span class="sl">'+esc(i.sl)+'</span><span class="lr">'+lrHtml(i.lr,i)+'</span>'+
     '<span class="noa"><small>NOA</small><b>'+i.noa+'</b></span>'+
     '<span class="meta">'+(i.remark?'<span class="rbadge">REMARK</span>':'')+esc(meta)+'</span><span class="pill">'+esc(pill)+'</span></button>'+
     (open?ctlHtml(i,st(i)):extraHtml(i))+'</article>';
@@ -1255,7 +1256,7 @@ function exSectionsOld(){
 }
 function earlyCard(all){
   var h='<div class="xform earlycard"><p><b>Weight already taken earlier</b></p>';
-  all.filter(earlier).forEach(function(i){h+='<div class="lrchip"><span class="lrh">'+lrHtml(i.lr)+'</span><small>NOA '+i.noa+' · came to godown '+esc(dmy(i.indt))+'</small></div>'});
+  all.filter(earlier).forEach(function(i){h+='<div class="lrchip"><span class="lrh">'+lrHtml(i.lr,i)+'</span><small>NOA '+i.noa+' · came to godown '+esc(dmy(i.indt))+'</small></div>'});
   h+='<p style="color:var(--ink2)">This LR is not in your weight list. The previous auditor already weighed it.</p><div class="big"><button type="button" class="btn line2" data-act="wtshow">Show it anyway</button></div></div>';
   return h;
 }
@@ -1293,10 +1294,10 @@ function table(items,mode){
   var head,rowf;
   if(mode==='warn'){
     head='<th class="n">Sl</th><th>LR no</th><th class="n">Found / NOA</th><th class="n">Short</th><th>Description</th><th>Stn</th><th>Remark</th>';
-    rowf=function(i){return '<td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td class="n"><b>'+i.found+'</b> / '+i.noa+'</td><td class="n"><b>'+(i.noa-i.found)+'</b></td><td>'+esc(i.desc)+'</td><td>'+esc(i.stn)+'</td><td class="rmc">'+esc(i.remark||'')+'</td>'};
+    rowf=function(i){return '<td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr,i)+'</td><td class="n"><b>'+i.found+'</b> / '+i.noa+'</td><td class="n"><b>'+(i.noa-i.found)+'</b></td><td>'+esc(i.desc)+'</td><td>'+esc(i.stn)+'</td><td class="rmc">'+esc(i.remark||'')+'</td>'};
   }else{
     head='<th class="n">Sl</th><th>LR no</th><th class="n">NOA</th><th>Description</th><th>Stn</th><th>Remark</th>';
-    rowf=function(i){return '<td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td class="n">'+i.noa+'</td><td>'+esc(i.desc)+'</td><td>'+esc(i.stn)+'</td><td class="rmc">'+esc(i.remark||'')+'</td>'};
+    rowf=function(i){return '<td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr,i)+'</td><td class="n">'+i.noa+'</td><td>'+esc(i.desc)+'</td><td>'+esc(i.stn)+'</td><td class="rmc">'+esc(i.remark||'')+'</td>'};
   }
   return '<div class="tw"><table><thead><tr>'+head+'</tr></thead><tbody>'+items.map(function(i){return '<tr>'+rowf(i)+'</tr>'}).join('')+'</tbody></table></div>';
 }
@@ -1359,7 +1360,7 @@ function cftDims(i){
 function cftMissing(i){return isW(i)&&!cftDims(i)&&!(earlier(i)&&S.wtHide)}
 function cftMissingSection(){
   var w=S.items.filter(function(i){return cftMissing(i)&&physOf(i)>0});if(!w.length)return '';
-  var rows=w.map(function(i){var s=st(i);return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td>'+esc(i.stn)+'</td><td class="n">'+i.noa+'</td><td><span class="spill st-'+s+'">'+(s==='cr'?'CR stock':s==='ok'?'All found':s==='bad'?'Not found':s==='warn'?i.found+' of '+i.noa:'Not checked')+'</span></td></tr>'}).join('');
+  var rows=w.map(function(i){var s=st(i);return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr,i)+'</td><td>'+esc(i.stn)+'</td><td class="n">'+i.noa+'</td><td><span class="spill st-'+s+'">'+(s==='cr'?'CR stock':s==='ok'?'All found':s==='bad'?'Not found':s==='warn'?i.found+' of '+i.noa:'Not checked')+'</span></td></tr>'}).join('');
   return '<section class="grp st-bad"><header><h3>CFT missing on W / A LRs</h3><span>'+w.length+' LRs. CFT is compulsory for W and A.</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th>Stn</th><th class="n">NOA</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
 function wtItems(){return S.items.filter(function(i){return physOf(i)>0})}
@@ -1605,7 +1606,7 @@ function tmPanel(){
       var mine,theirs,both='';
       if(c.type==='weight'){mine=physOf(i).toFixed(2)+' kg';theirs=tmPhys(c.th.pw).toFixed(2)+' kg';both='<button type="button" data-act="tmboth" data-id="'+i.id+'">Add both (parts of one lot)</button>'}
       else{mine=tmLab(i,i.noa);theirs=tmLab(c.th,i.noa);if(c.sum){var sm=Math.min(i.noa,(i.found||0)+(c.th.found||0));both='<button type="button" data-act="tmboth" data-id="'+i.id+'" data-t="stock">Add both: '+(i.found||0)+' + '+(c.th.found||0)+' = '+sm+' of '+i.noa+'</button>'}}
-      h+='<div class="tmcl"><div><b>'+lrHtml(i.lr)+'</b> · NOA '+i.noa+' · '+(c.type==='weight'?'Physical weight':'Stock check')+'</div><div class="vs"><span>Mine: <b>'+esc(mine)+'</b></span><span>'+esc(t.label)+': <b>'+esc(theirs)+'</b></span></div><div class="acts2"><button type="button" data-act="tmmine" data-id="'+i.id+'" data-t="'+c.type+'">Keep mine</button><button type="button" data-act="tmtheirs" data-id="'+i.id+'" data-t="'+c.type+'">Use '+esc(t.label)+'</button>'+both+'</div></div>';
+      h+='<div class="tmcl"><div><b>'+lrHtml(i.lr,i)+'</b> · NOA '+i.noa+' · '+(c.type==='weight'?'Physical weight':'Stock check')+'</div><div class="vs"><span>Mine: <b>'+esc(mine)+'</b></span><span>'+esc(t.label)+': <b>'+esc(theirs)+'</b></span></div><div class="acts2"><button type="button" data-act="tmmine" data-id="'+i.id+'" data-t="'+c.type+'">Keep mine</button><button type="button" data-act="tmtheirs" data-id="'+i.id+'" data-t="'+c.type+'">Use '+esc(t.label)+'</button>'+both+'</div></div>';
     });
     h+='<button type="button" class="btn line" data-act="tmmineall">Keep mine for all remaining</button>';
   }
@@ -1773,7 +1774,7 @@ function weightSection(){
   var s=wtStats();
   var rows=w.map(function(i){
     var c=cwtOf(i),d=wdiff(i),l=wlossOf(i);
-    return '<tr class="'+(l?'lossrow':'')+'"><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td>'+esc(i.stn)+'</td><td class="n">'+i.noa+'</td><td class="n">'+(awtOf(i)>0?awtOf(i).toFixed(2):'-')+'</td><td class="n">'+(c>0?c.toFixed(2):'-')+'</td><td class="n"><b>'+physOf(i).toFixed(2)+'</b></td><td class="n">'+liftedOf(i).toFixed(2)+'</td><td>'+esc(cftDims(i))+'</td><td class="n"><b>'+(c>0?(d>0?'+':'')+d.toFixed(2):'-')+'</b></td><td>'+(l?'<span class="wbadge loss">LOSS</span>':(c>0?'<span class="wbadge ok">OK</span>':''))+'</td></tr>';
+    return '<tr class="'+(l?'lossrow':'')+'"><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr,i)+'</td><td>'+esc(i.stn)+'</td><td class="n">'+i.noa+'</td><td class="n">'+(awtOf(i)>0?awtOf(i).toFixed(2):'-')+'</td><td class="n">'+(c>0?c.toFixed(2):'-')+'</td><td class="n"><b>'+physOf(i).toFixed(2)+'</b></td><td class="n">'+liftedOf(i).toFixed(2)+'</td><td>'+esc(cftDims(i))+'</td><td class="n"><b>'+(c>0?(d>0?'+':'')+d.toFixed(2):'-')+'</b></td><td>'+(l?'<span class="wbadge loss">LOSS</span>':(c>0?'<span class="wbadge ok">OK</span>':''))+'</td></tr>';
   }).join('');
   return '<section class="grp st-loss"><header><h3>Physical vs charged weight</h3><span>'+s.n+' LRs weighed · '+s.loss+' in loss · '+s.kg.toFixed(2)+' kg over charged · Labour lifted '+liftedTotal().toFixed(2)+' kg ('+tonStr(liftedTotal())+')</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th>Stn</th><th class="n">NOA</th><th class="n">Actual kg</th><th class="n">Charged kg</th><th class="n">Physical kg</th><th class="n">Lifted kg</th><th>CFT (L&times;W&times;H)</th><th class="n">Diff kg</th><th>Result</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
@@ -1783,7 +1784,7 @@ function remarkSection(){
   var w=S.items.filter(hasRem);if(!w.length)return '';
   var rows=w.map(function(i){
     var s=st(i),lab=s==='cr'?'CR stock':s==='idle'?'Not checked':s==='ok'?'All found':s==='bad'?'Not found':i.found+' of '+i.noa;
-    return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td>'+esc(i.stn)+'</td><td><span class="spill st-'+s+'">'+esc(lab)+'</span></td><td>'+esc(i.remark)+'</td></tr>';
+    return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr,i)+'</td><td>'+esc(i.stn)+'</td><td><span class="spill st-'+s+'">'+esc(lab)+'</span></td><td>'+esc(i.remark)+'</td></tr>';
   }).join('');
   return '<section class="grp st-note"><header><h3>Remarks written</h3><span>'+w.length+' LRs have a remark</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th>Stn</th><th>Status</th><th>Remark</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
@@ -1828,7 +1829,7 @@ function cftSection(){
   var rows=w.map(function(i){
     var c=cftOf(i);tot+=c;totw+=cftWt(i);
     var dims=i.cft?i.cft.rows.filter(function(r){return parseFloat(r.l)>0&&parseFloat(r.w)>0&&parseFloat(r.h)>0}).map(function(r){return r.l+'×'+r.w+'×'+r.h+(r.q?' ('+r.q+')':'')}).join(', '):'';
-    return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr)+'</td><td class="n">'+i.noa+'</td><td>'+esc(i.stn)+'</td><td>'+esc(dims?dims+' '+i.cft.u:'not entered')+'</td><td class="n"><b>'+(c?c.toFixed(2):'-')+'</b></td><td class="n">'+(c?cftWt(i).toFixed(2):'-')+'</td></tr>';
+    return '<tr><td class="n">'+esc(i.sl)+'</td><td class="lrc">'+lrHtml(i.lr,i)+'</td><td class="n">'+i.noa+'</td><td>'+esc(i.stn)+'</td><td>'+esc(dims?dims+' '+i.cft.u:'not entered')+'</td><td class="n"><b>'+(c?c.toFixed(2):'-')+'</b></td><td class="n">'+(c?cftWt(i).toFixed(2):'-')+'</td></tr>';
   }).join('');
   return '<section class="grp st-info"><header><h3>CFT</h3><span>'+w.length+' LRs · total '+tot.toFixed(2)+' CFT · '+totw.toFixed(2)+' kg</span></header><div class="tw"><table><thead><tr><th class="n">Sl</th><th>LR no</th><th class="n">NOA</th><th>Stn</th><th>Size (qty)</th><th class="n">CFT</th><th class="n">Weight kg</th></tr></thead><tbody>'+rows+'</tbody></table></div></section>';
 }
@@ -1837,7 +1838,7 @@ function chartHtml(){
     '<div class="legend"><span class="st-ok">Green: all found</span><span class="st-warn">Orange: short</span><span class="st-bad">Red: not found</span><span class="st-cr">Teal: CR stock</span><span>Grey: not checked</span><span class="st-note">Yellow: has a remark</span></div><div class="chart">';
   S.items.forEach(function(i){
     var s=st(i),f=s==='idle'?'not checked':s==='ok'?'all '+i.noa:s==='bad'?'0 of '+i.noa:s==='cr'?'CR stock':i.found+' of '+i.noa;
-    h+='<div class="cc st-'+s+'"><div class="ct"><span>#'+esc(i.sl)+'</span><span>'+f+'</span></div><div class="cl">'+lrHtml(i.lr)+'</div>'+(i.stn?'<div class="cstn">'+esc(i.stn)+'</div>':'')+(wlossOf(i)?'<div class="cwl">LOSS +'+wlossOf(i).toFixed(1)+' kg</div>':'')+(i.remark?'<div class="crm">REMARK: '+esc(i.remark)+'</div>':'')+'</div>';
+    h+='<div class="cc st-'+s+'"><div class="ct"><span>#'+esc(i.sl)+'</span><span>'+f+'</span></div><div class="cl">'+lrHtml(i.lr,i)+'</div>'+(i.stn?'<div class="cstn">'+esc(i.stn)+'</div>':'')+(wlossOf(i)?'<div class="cwl">LOSS +'+wlossOf(i).toFixed(1)+' kg</div>':'')+(i.remark?'<div class="crm">REMARK: '+esc(i.remark)+'</div>':'')+'</div>';
   });
   return h+'</div></section>';
 }
@@ -1883,7 +1884,7 @@ function tilePanel(){
   var d=tileData(k),l=d.list;if(!l.length)return '';
   var h='<div class="tpanel tp-'+k+'" id="tpanel"><div class="tph"><b>'+(TTITLE[k]||k)+' · '+l.length+(d.ex?(l.length>1?' entries':' entry'):' LR'+(l.length>1?'s':''))+'</b><button type="button" class="link" data-act="tileclose">Close</button></div><div class="chiprow">';
   if(d.ex)h+=l.map(function(x){return '<div class="lrchip"><span class="lrh">'+(x.lr||x.lr4?esc(x.lr||x.lr4):'No LR / name')+'</span><small>'+x.qty+' article'+(+x.qty>1?'s':'')+(x.crno?' · CR '+esc(x.crno):'')+(x.wt?' · '+esc(x.wt)+' kg':'')+(x.desc?' · '+esc(x.desc):'')+'</small>'+exActs(x,exKind(x))+'</div>'}).join('');
-  else h+=l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-w="'+((k==='wt'||k==='lift'||k==='loss'||k==='acct')?1:0)+'" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr)+'</span><small>'+esc(tileChipSmall(k,i))+'</small></button>'}).join('');
+  else h+=l.map(function(i){return '<button type="button" class="lrchip" data-act="gocheck" data-w="'+((k==='wt'||k==='lift'||k==='loss'||k==='acct')?1:0)+'" data-id="'+i.id+'"><span class="lrh">'+lrHtml(i.lr,i)+'</span><small>'+esc(tileChipSmall(k,i))+'</small></button>'}).join('');
   h+='</div>'+(d.ex?'':'<p class="hint2">Tap an LR to open it.</p>')+'</div>';
   return h;
 }
@@ -2272,7 +2273,7 @@ else{show('upload');updRestore()}
 })();
 
 (function(){
-  var APPV=47;
+  var APPV=48;
   var vb=document.getElementById('verbtn');
   function hard(){
     try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistrations().then(function(rs){rs.forEach(function(r){r.unregister()})})}catch(e){}
